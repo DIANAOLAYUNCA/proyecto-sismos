@@ -10,9 +10,10 @@ import pe.edu.cssp.model.Evento;
 import pe.edu.cssp.repository.EventoRepository;
 
 import java.io.IOException;
+import java.util.Optional;
 
-@WebServlet(name = "EventoEliminarServlet", urlPatterns = "/eventos/eliminar")
-public class EventoEliminarServlet extends HttpServlet {
+@WebServlet(name = "EventoDetalleServlet", urlPatterns = "/eventos/detalle")
+public class EventoDetalleServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,11 +25,14 @@ public class EventoEliminarServlet extends HttpServlet {
 
         int id = leerId(request.getParameter("id"));
 
-        Evento evento = repositorio(request)
-                .buscarId(id)
-                .orElse(null);
+        EventoRepository repositorio = repositorio(request);
 
-        if (evento == null) {
+        Optional<Evento> encontrado =
+                id > 0
+                        ? repositorio.buscarId(id)
+                        : Optional.empty();
+
+        if (encontrado.isEmpty()) {
             response.sendError(
                     HttpServletResponse.SC_NOT_FOUND
             );
@@ -37,32 +41,22 @@ public class EventoEliminarServlet extends HttpServlet {
 
         request.setAttribute(
                 "evento",
-                evento
+                encontrado.get()
+        );
+
+        request.setAttribute(
+                "eventoCreado",
+                "1".equals(request.getParameter("creado"))
+        );
+
+        request.setAttribute(
+                "eventoActualizado",
+                "1".equals(request.getParameter("actualizado"))
         );
 
         request.getRequestDispatcher(
-                "/WEB-INF/views/sismos/eliminar.jsp"
+                "/WEB-INF/views/sismos/detalle.jsp"
         ).forward(request, response);
-    }
-
-    @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
-
-        int id = leerId(
-                request.getParameter("id")
-        );
-
-        boolean eliminado =
-                repositorio(request).eliminar(id);
-
-        response.sendRedirect(
-                request.getContextPath()
-                + "/eventos?eliminado="
-                + eliminado
-        );
     }
 
     private EventoRepository repositorio(

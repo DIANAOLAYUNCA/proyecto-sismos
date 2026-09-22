@@ -17,15 +17,19 @@ public class EstacionEliminarServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws ServletException, IOException {
 
+        int id = leerId(request.getParameter("id"));
+
         Estacion estacion = repositorio(request)
-                .buscarId(leerId(request.getParameter("id")))
+                .buscarId(id)
                 .orElse(null);
 
         if (estacion == null) {
-            response.sendRedirect(request.getContextPath() + "/estaciones");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
@@ -37,20 +41,31 @@ public class EstacionEliminarServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws IOException {
 
         int id = leerId(request.getParameter("id"));
-        boolean eliminado = repositorio(request).eliminar(id);
+
+        boolean eliminado =
+                repositorio(request).eliminar(id);
 
         response.sendRedirect(
-                request.getContextPath() + "/estaciones?eliminado=" + eliminado
+                request.getContextPath()
+                + "/estaciones?eliminado="
+                + eliminado
         );
     }
 
-    private EstacionRepository repositorio(HttpServletRequest request) {
-        return (EstacionRepository) request.getServletContext()
-                .getAttribute(AplicacionListener.REPOSITORIO_ESTACIONES);
+    private EstacionRepository repositorio(
+            HttpServletRequest request) {
+
+        return (EstacionRepository) request
+                .getServletContext()
+                .getAttribute(
+                        AplicacionListener.REPOSITORIO_ESTACIONES
+                );
     }
 
     private int leerId(String texto) {
