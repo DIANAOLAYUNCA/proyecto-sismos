@@ -138,6 +138,23 @@ select:focus {
     box-shadow: 0 0 0 3px rgba(59, 74, 99, 0.15);
 }
 
+input.campo-invalido,
+select.campo-invalido {
+    border-color: var(--color-peligro);
+}
+
+input.campo-invalido:focus,
+select.campo-invalido:focus {
+    box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.15);
+}
+
+.mensaje-campo {
+    color: var(--color-peligro);
+    font-size: 0.82rem;
+    font-weight: 400;
+    min-height: 1em;
+}
+
 button {
     padding: 10px 18px;
     border: 1px solid var(--color-acento);

@@ -40,12 +40,15 @@
 
         <form method="post"
               action="${pageContext.request.contextPath}/afectacionniveles/nuevo"
-              class="formulario formulario-columna">
+              class="formulario formulario-columna"
+              id="formulario-nivel"
+              novalidate>
 
             <label>
                 Nombre
 
-                <input name="nombre"
+                <input id="campo-nombre"
+                       name="nombre"
                        value="<c:out value='${nombreIngresado}'/>"
                        maxlength="100"
                        required>
@@ -54,7 +57,8 @@
             <label>
                 Código
 
-                <input name="codigo"
+                <input id="campo-codigo"
+                       name="codigo"
                        value="<c:out value='${codigoIngresado}'/>"
                        maxlength="20"
                        required>
@@ -77,6 +81,32 @@
     </section>
 
 </main>
+
+<script src="${pageContext.request.contextPath}/js/validaciones.js"></script>
+<script>
+    (function () {
+        const campoNombre = document.getElementById('campo-nombre');
+        const campoCodigo = document.getElementById('campo-codigo');
+        const formulario = document.getElementById('formulario-nivel');
+
+        campoNombre.addEventListener('input', function () {
+            ValidacionesCSSP.validarTexto(campoNombre, 100, 'El nombre es obligatorio.');
+        });
+
+        campoCodigo.addEventListener('input', function () {
+            ValidacionesCSSP.validarTexto(campoCodigo, 20, 'El código es obligatorio.');
+        });
+
+        formulario.addEventListener('submit', function (evento) {
+            const nombreValido = ValidacionesCSSP.validarTexto(campoNombre, 100, 'El nombre es obligatorio.');
+            const codigoValido = ValidacionesCSSP.validarTexto(campoCodigo, 20, 'El código es obligatorio.');
+
+            if (!nombreValido || !codigoValido) {
+                evento.preventDefault();
+            }
+        });
+    })();
+</script>
 
 </body>
 </html>

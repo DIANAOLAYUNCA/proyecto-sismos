@@ -40,12 +40,15 @@
 
         <form method="post"
               action="${pageContext.request.contextPath}/ubicaciones/nuevo"
-              class="formulario formulario-columna">
+              class="formulario formulario-columna"
+              id="formulario-ubicacion"
+              novalidate>
 
             <label>
                 Provincia (ID)
 
-                <input name="provinciaId"
+                <input id="campo-provinciaId"
+                       name="provinciaId"
                        type="number"
                        value="<c:out value='${provinciaIdIngresada}'/>"
                        min="1"
@@ -55,7 +58,8 @@
             <label>
                 Distrito (ID, opcional)
 
-                <input name="distritoId"
+                <input id="campo-distritoId"
+                       name="distritoId"
                        type="number"
                        value="<c:out value='${distritoIdIngresada}'/>"
                        min="1">
@@ -78,6 +82,35 @@
     </section>
 
 </main>
+
+<script src="${pageContext.request.contextPath}/js/validaciones.js"></script>
+<script>
+    (function () {
+        const campoProvincia = document.getElementById('campo-provinciaId');
+        const campoDistrito = document.getElementById('campo-distritoId');
+        const formulario = document.getElementById('formulario-ubicacion');
+
+        const mensajeProvincia = 'La provincia es obligatoria y debe ser un número entero positivo.';
+        const mensajeDistrito = 'El distrito, si se indica, debe ser un número entero positivo.';
+
+        campoProvincia.addEventListener('input', function () {
+            ValidacionesCSSP.validarEnteroPositivo(campoProvincia, false, mensajeProvincia);
+        });
+
+        campoDistrito.addEventListener('input', function () {
+            ValidacionesCSSP.validarEnteroPositivo(campoDistrito, true, mensajeDistrito);
+        });
+
+        formulario.addEventListener('submit', function (evento) {
+            const provinciaValida = ValidacionesCSSP.validarEnteroPositivo(campoProvincia, false, mensajeProvincia);
+            const distritoValido = ValidacionesCSSP.validarEnteroPositivo(campoDistrito, true, mensajeDistrito);
+
+            if (!provinciaValida || !distritoValido) {
+                evento.preventDefault();
+            }
+        });
+    })();
+</script>
 
 </body>
 </html>
