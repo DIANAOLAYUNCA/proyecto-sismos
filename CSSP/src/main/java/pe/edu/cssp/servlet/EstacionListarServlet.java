@@ -33,6 +33,7 @@ public class EstacionListarServlet extends HttpServlet {
         }
 
         request.setAttribute("estaciones", estaciones);
+        request.setAttribute("totalEstaciones", estaciones.size());
         request.setAttribute("estadoSeleccionado", estado);
 
         request.getRequestDispatcher(
