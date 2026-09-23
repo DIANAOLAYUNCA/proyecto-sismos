@@ -73,10 +73,48 @@
         return true;
     }
 
+    function validarNumero(campo, opciones, mensaje) {
+        opciones = opciones || {};
+
+        const valor = campo.value.trim();
+
+        if (valor === '') {
+            mostrarError(campo, mensaje || 'Este campo es obligatorio.');
+            return false;
+        }
+
+        const numero = Number(valor.replace(',', '.'));
+
+        if (Number.isNaN(numero)) {
+            mostrarError(campo, mensaje || 'Debe ser un número válido.');
+            return false;
+        }
+
+        const minimo = opciones.min;
+        const maximo = opciones.max;
+        const minExclusivo = !!opciones.minExclusivo;
+
+        if (minimo !== undefined && minimo !== null) {
+            if (minExclusivo ? numero <= minimo : numero < minimo) {
+                mostrarError(campo, mensaje || 'Debe ser mayor' + (minExclusivo ? '' : ' o igual') + ' a ' + minimo + '.');
+                return false;
+            }
+        }
+
+        if (maximo !== undefined && maximo !== null && numero > maximo) {
+            mostrarError(campo, mensaje || 'Debe ser menor o igual a ' + maximo + '.');
+            return false;
+        }
+
+        limpiarError(campo);
+        return true;
+    }
+
     window.ValidacionesCSSP = {
         validarRequerido: validarRequerido,
         validarEnteroPositivo: validarEnteroPositivo,
-        validarTexto: validarTexto
+        validarTexto: validarTexto,
+        validarNumero: validarNumero
     };
 
 })();
