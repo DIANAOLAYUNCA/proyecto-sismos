@@ -1,18 +1,195 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>CSSP</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    </head>
-    <body>
-        
-        <a href="eventos">Abrir CSSP - Reportes de sismos(eventos)</a>
-        <br>
-        <a href="estaciones">Abrir CSSP - Estaciones</a>
-        <br>
-        <a href="ubicaciones">Abrir CSSP - Ubicaciones</a>
-        <br>
-        <a href="afectacionniveles">Abrir CSSP - Niveles de afectación</a>
+<html lang="es">
+<head>
+    <title>CSSP</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent-color: #0284c7;
+            --accent-hover: #0369a1;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+            --radius: 10px;
+        }
 
-    </body>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .module-item {
+            display: flex;
+            flex-direction: column;
+            padding: 18px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: calc(var(--radius) - 2px);
+            background-color: #ffffff;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .module-item:hover {
+            border-color: var(--accent-color);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            background-color: #f8fafc;
+        }
+        
+        .module-header {
+            display: flex;
+            flex: 1;
+            justify-content: space-between;
+            margin-right: 1rem;
+        }
+
+        .module-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .module-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.4rem 0.5rem;
+            border-radius: 4px;
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-muted);
+        }
+
+        .module-item:hover .module-title {
+            color: var(--accent-hover);
+        }
+
+        .module-title::after {
+            content: "→";
+            font-size: 1.1rem;
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.2s ease;
+        }
+
+        .module-item:hover .module-title::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .module-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2>Plataforma CSSP</h2>
+            <p>Sistema de Monitoreo Sísmico y Gestión de Emergencias</p>
+        </header>
+
+        <main class="module-list">
+            <!-- Link 1: Eventos -->
+            <a href="eventos" class="module-item">                
+                <span class="module-title">Sismos</span>
+                <p class="module-desc">Búsqueda y verificación de información de eventos registrados filtrados por magnitud y fecha</p>
+            </a>
+
+            <!-- Link 2: Estaciones -->
+            <a href="estaciones" class="module-item">
+                <span class="module-title">Estaciones</span>
+                <p class="module-desc">Administración y estado operativo de los sensores sísmicos en la red nacional</p>
+            </a>
+
+            <!-- Link 3: Ubicaciones -->
+            <a href="ubicaciones" class="module-item">
+                <span class="module-title">Ubicaciones</span>
+                <p class="module-desc">Registro de departamentos, provincias y zonas geográficas epicentrales</p>
+            </a>
+
+            <!-- Link 4: Niveles de Afectación -->
+            <a href="afectacionniveles" class="module-item">
+                <span class="module-title">Niveles de Afectación</span>
+                <p class="module-desc">Indicadores de impacto, intensidad percibida y categorías de daños</p>
+            </a>
+        </main>
+
+        <footer>
+            CSSP &copy; Grupo 4 - Proyecto realizado con JDK24 Y Tomcat11
+        </footer>
+    </div>
+
+</body>
 </html>
