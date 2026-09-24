@@ -32,11 +32,37 @@ public class EventoListarServlet extends HttpServlet {
         String ubicacionTexto =
                 limpiar(request.getParameter("ubicacion"));
 
+        String codigoTexto =
+                limpiar(request.getParameter("codigo"));
+
+        String fechaTexto =
+                limpiar(request.getParameter("fecha"));
+
         EventoRepository repositorio =
                 repositorio(request);
 
         List<Evento> eventos =
                 repositorio.listar();
+
+        if (!codigoTexto.isBlank()) {
+
+            String busqueda = codigoTexto.toUpperCase();
+
+            eventos = eventos.stream()
+                    .filter(evento ->
+                            evento.getCodigo() != null
+                                    && evento.getCodigo().toUpperCase().contains(busqueda))
+                    .toList();
+        }
+
+        if (!fechaTexto.isBlank()) {
+
+            eventos = eventos.stream()
+                    .filter(evento ->
+                            evento.getFechaHora() != null
+                                    && evento.getFechaHora().startsWith(fechaTexto))
+                    .toList();
+        }
 
         if (!magnitudMinimaTexto.isBlank()) {
 
@@ -115,6 +141,16 @@ public class EventoListarServlet extends HttpServlet {
         request.setAttribute(
                 "ubicacionSeleccionada",
                 ubicacionTexto
+        );
+
+        request.setAttribute(
+                "codigoBuscado",
+                codigoTexto
+        );
+
+        request.setAttribute(
+                "fechaSeleccionada",
+                fechaTexto
         );
 
         request.getRequestDispatcher(

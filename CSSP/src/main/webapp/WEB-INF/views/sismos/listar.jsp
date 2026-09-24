@@ -45,11 +45,35 @@
 
     </c:if>
 
+    <c:if test="${param.eliminado eq 'false'}">
+
+        <div class="alerta alerta-error">
+            No se pudo eliminar el sismo: el registro ya no existe o el identificador no es válido.
+        </div>
+
+    </c:if>
+
     <section class="tarjeta">
 
         <form method="get"
               action="${pageContext.request.contextPath}/eventos"
               class="filtro">
+
+            <label>
+                Código
+
+                <input name="codigo"
+                       value="<c:out value='${codigoBuscado}'/>"
+                       placeholder="Ej. SIS-2026-0001">
+            </label>
+
+            <label>
+                Fecha
+
+                <input name="fecha"
+                       type="date"
+                       value="<c:out value='${fechaSeleccionada}'/>">
+            </label>
 
             <label>
                 Magnitud mínima

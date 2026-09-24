@@ -32,6 +32,12 @@
         </div>
     </c:if>
 
+    <c:if test="${param.eliminado eq 'false'}">
+        <div class="alerta alerta-error">
+            No se pudo eliminar la ubicación: el registro ya no existe o el identificador no es válido.
+        </div>
+    </c:if>
+
     <c:if test="${not empty error}">
         <div class="alerta alerta-error">
             <c:out value="${error}"/>

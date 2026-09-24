@@ -29,6 +29,11 @@
             La estación fue dada de baja correctamente.
         </div>
     </c:if>
+    <c:if test="${param.eliminado eq 'false'}">
+        <div class="alerta alerta-error">
+            No se pudo dar de baja la estación: el registro ya no existe o el identificador no es válido.
+        </div>
+    </c:if>
     <section class="tarjeta">
         <form method="get"
               action="${pageContext.request.contextPath}/estaciones"
