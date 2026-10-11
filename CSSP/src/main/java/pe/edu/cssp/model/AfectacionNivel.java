@@ -1,17 +1,40 @@
 package pe.edu.cssp.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "Afectacion_Nivel")
 public class AfectacionNivel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    
+    @Column(name = "nombre", unique = true, nullable = false, length = 100)
     private String nombre;
+    
+    @Column(name = "codigo", length = 20)
     private String codigo;
+    
+    @Column(name = "creacion_fecha", nullable = false)
     private String creacionFecha;
+    
+    @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
+    
+    @Column(name = "actualizacion_fecha")
     private String actualizacionFecha;
+    
+    @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
 
-    public AfectacionNivel() {
-    }
-
+    public AfectacionNivel() {}
+    
+    /* Constructor */
     public AfectacionNivel(int id, String nombre, String codigo,
                             String creacionFecha, String creacionUsuario,
                             String actualizacionFecha, String actualizacionUsuario) {

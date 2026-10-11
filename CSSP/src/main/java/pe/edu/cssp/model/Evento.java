@@ -1,20 +1,65 @@
 package pe.edu.cssp.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "Evento")
 public class Evento {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "estacion_id", nullable = false)
     private int estacionId;
+    
+    @Column(name = "codigo", length = 30)
     private String codigo;
+    
+    @Column(name = "fecha_hora")
     private String fechaHora;
+    
+    @Column(name = "magnitud")
     private double magnitud;
+    
+    @Column(name = "profundidad")
     private double profundidad;
+    
+    @Column(name = "latitud")
     private double latitud;
+    
+    @Column(name = "longitud")
     private double longitud;
+    
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "ubicacion_id", nullable = false)
     private int ubicacionId;
+    
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "afectacion_nivel_id", nullable = false)
     private int afectacionNivelId;
+
+    @Column(name = "estado", nullable = false, length = 20)
     private String estado;
+    
+    @Column(name = "creacion_fecha", nullable = false)
     private String creacionFecha;
+    
+    @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
+    
+    @Column(name = "actualizacion_fecha")
     private String actualizacionFecha;
+    
+    @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
 
     public Evento() {
