@@ -33,6 +33,7 @@ public class AfectacionTipo {
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
     
+    
     /* Clase publica para los servlets */
     public AfectacionTipo() {}
     
