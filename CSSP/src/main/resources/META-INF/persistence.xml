@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
-    <!-- Define Persistence Unit -->
-    <persistence-unit name="my_persistence_unit">
-        
+<persistence
+    xmlns="https://jakarta.ee/xml/ns/persistence"
+    version="3.0">
+
+    <persistence-unit
+        name="CSSPPU"
+        transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <!-- Entidades registradas en JPA -->
+        <class>pe.edu.cssp.model.AfectacionNivel</class>
+        <class>pe.edu.cssp.model.Estacion</class>
+
+        <properties>
+
+            <!-- Driver MySQL -->
+            <property
+                name="jakarta.persistence.jdbc.driver"
+                value="com.mysql.cj.jdbc.Driver"/>
+
+            <!-- Base de datos -->
+            <property
+                name="jakarta.persistence.jdbc.url"
+                value="jdbc:mysql://localhost:3307/cssp_sismos"/>
+
+            <!-- Usuario de MySQL -->
+            <property
+                name="jakarta.persistence.jdbc.user"
+                value="cssp_app"/>
+
+            <!-- Contraseña proporcionada mediante JpaUtil -->
+            <property
+                name="jakarta.persistence.jdbc.password"
+                value="${CSSP_DB_PASSWORD}"/>
+
+            <!-- No crear ni modificar tablas -->
+            <property
+                name="jakarta.persistence.schema-generation.database.action"
+                value="none"/>
+
+            <!-- Mostrar consultas SQL -->
+            <property
+                name="eclipselink.logging.level.sql"
+                value="FINE"/>
+
+        </properties>
+
     </persistence-unit>
+
 </persistence>

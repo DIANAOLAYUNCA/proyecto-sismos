@@ -1,71 +1,145 @@
 package pe.edu.cssp.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import pe.edu.cssp.config.JpaUtil;
 import pe.edu.cssp.model.Estacion;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EstacionRepository {
 
-    private final List<Estacion> estaciones = new CopyOnWriteArrayList<>();
-    private int siguienteId = 1;
-
-    public EstacionRepository() {
-    agregar(new Estacion(0, "EST-001", "Estación Sismológica Characato - Arequipa", 335, -16.465000, -71.488000, "2015-03-10", "ACTIVA", "2026-01-01 08:00:00", "sistema", null, null));
-    agregar(new Estacion(0, "ñoEST-002", "Estación Sismológica Cusco", 1942, -13.532000, -71.967500, "2018-07-22", "ACTIVA", "2026-01-01 08:05:00", "sistema", null, null));
-    agregar(new Estacion(0, "EST-003", "Estación Sismológica Huancayo", 3259, -12.065000, -75.210000, "2019-05-14", "ACTIVA", "2026-01-01 08:10:00", "sistema", null, null));
-    agregar(new Estacion(0, "EST-004", "Estación Sismológica Ica", 406, -14.067000, -75.728000, "2020-08-03", "ACTIVA", "2026-01-01 08:15:00", "sistema", null, null));
-    agregar(new Estacion(0, "EST-005", "Estación Sismológica Tacna", 562, -18.014000, -70.253000, "2021-11-19", "INACTIVA", "2026-01-01 08:20:00", "sistema", null, null));
-    }
-
+    // LISTAR ESTACIONES
     public List<Estacion> listar() {
-        return List.copyOf(estaciones);
+        try (EntityManager em = JpaUtil.crearEntityManager()) {
+            return em.createQuery(
+                "SELECT e FROM Estacion e ORDER BY e.id",
+                Estacion.class
+            ).getResultList();
+        }
     }
 
+    // BUSCAR POR ID
+    public Optional<Estacion> buscarId(int id) {
+        try (EntityManager em = JpaUtil.crearEntityManager()) {
+            return Optional.ofNullable(
+                em.find(Estacion.class, id)
+            );
+        }
+    }
+
+    // BUSCAR POR CODIGO
     public Optional<Estacion> buscarCod(String codigo) {
         if (codigo == null) {
             return Optional.empty();
         }
-        return estaciones.stream()
-                .filter(e -> e.getCodigo().equalsIgnoreCase(codigo.trim()))
-                .findFirst();
+
+        try (EntityManager em = JpaUtil.crearEntityManager()) {
+            return em.createQuery(
+                "SELECT e FROM Estacion e "
+                + "WHERE UPPER(e.codigo) = :codigo",
+                Estacion.class
+            )
+            .setParameter("codigo", codigo.trim().toUpperCase())
+            .getResultStream()
+            .findFirst();
+        }
     }
 
-    public Optional<Estacion> buscarId(int id) {
-        return estaciones.stream()
-                .filter(e -> e.getId() == id)
-                .findFirst();
-    }
-
+    // VERIFICAR CODIGO EXISTENTE
     public boolean existCodigo(String codigo) {
         return buscarCod(codigo).isPresent();
     }
 
+    // REGISTRAR ESTACION
     public Estacion agregar(Estacion estacion) {
-        estacion.setId(siguienteId++);
-        estaciones.add(estacion);
-        return estacion;
-    }
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
 
-    public boolean actualizar(Estacion estacion) {
-        Optional<Estacion> actual = buscarId(estacion.getId());
-        if (actual.isEmpty()) {
-            return false;
+        try {
+            tx.begin();
+            em.persist(estacion);
+            tx.commit();
+
+            return estacion;
+
+        } catch (RuntimeException e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+
+        } finally {
+            em.close();
         }
-        int indice = estaciones.indexOf(actual.get());
-        estaciones.set(indice, estacion);
-        return true;
     }
 
-   public boolean eliminar(int id) {
-    Optional<Estacion> estacion = buscarId(id);
+    // ACTUALIZAR ESTACION
+    public boolean actualizar(Estacion estacion) {
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
 
-    if (estacion.isEmpty()) {
-        return false;
+        try {
+            tx.begin();
+
+            Estacion actual = em.find(
+                Estacion.class,
+                estacion.getId()
+            );
+
+            if (actual == null) {
+                tx.rollback();
+                return false;
+            }
+
+            em.merge(estacion);
+            tx.commit();
+
+            return true;
+
+        } catch (RuntimeException e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+
+        } finally {
+            em.close();
+        }
     }
 
-    estacion.get().setEstado("INACTIVA");
-    return true;
+    // ELIMINACION LOGICA
+    public boolean eliminar(int id) {
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+            Estacion estacion = em.find(
+                Estacion.class,
+                id
+            );
+
+            if (estacion == null) {
+                tx.rollback();
+                return false;
+            }
+
+            estacion.setEstado("INACTIVA");
+
+            tx.commit();
+            return true;
+
+        } catch (RuntimeException e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+
+        } finally {
+            em.close();
+        }
     }
 }
