@@ -2,61 +2,68 @@ package pe.edu.cssp.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Estacion")
 public class Estacion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "nombre", unique = true, nullable = false, length = 150)
+    @Column(name = "nombre", nullable = false, length = 150)
     private String nombre;
-    
+
     @Column(name = "codigo", length = 20)
     private String codigo;
-    
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "ubicacion_id", nullable = false)
+
+    @Column(name = "ubicacion_id", nullable = false)
     private int ubicacionId;
-    
+
     @Column(name = "latitud", precision = 9, scale = 6)
     private double latitud;
-    
+
     @Column(name = "longitud", precision = 9, scale = 6)
     private double longitud;
-    
+
     @Column(name = "instalacion_fecha")
     private String instalacionFecha;
-    
+
     @Column(name = "estado", nullable = false, length = 20)
     private String estado;
-    
+
     @Column(name = "creacion_fecha", nullable = false)
     private String creacionFecha;
-    
+
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
-    
+
     @Column(name = "actualizacion_fecha")
     private String actualizacionFecha;
-    
+
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
 
-    public Estacion() {}
+    public Estacion() {
+    }
 
-    public Estacion(int id, String codigo, String nombre, int ubicacionId,
-                    double latitud, double longitud, String instalacionFecha,
-                    String estado, String creacionFecha, String creacionUsuario,
-                    String actualizacionFecha, String actualizacionUsuario) {
+    public Estacion(
+            int id,
+            String codigo,
+            String nombre,
+            int ubicacionId,
+            double latitud,
+            double longitud,
+            String instalacionFecha,
+            String estado,
+            String creacionFecha,
+            String creacionUsuario,
+            String actualizacionFecha,
+            String actualizacionUsuario) {
 
         this.id = id;
         this.codigo = codigo;
