@@ -48,12 +48,19 @@ public class AfectacionNivelEliminarServlet extends HttpServlet {
 
         int id = leerId(request.getParameter("id"));
 
-        boolean eliminado = repositorio(request).eliminar(id);
+        String resultado;
+
+        try {
+            resultado = String.valueOf(repositorio(request).eliminar(id));
+        } catch (RuntimeException ex) {
+            getServletContext().log("Error al eliminar el nivel de afectación", ex);
+            resultado = "enuso";
+        }
 
         response.sendRedirect(
                 request.getContextPath()
                 + "/afectacionniveles?eliminado="
-                + eliminado
+                + resultado
         );
     }
 

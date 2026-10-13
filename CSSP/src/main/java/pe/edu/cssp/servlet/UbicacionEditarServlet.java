@@ -11,11 +11,16 @@ import pe.edu.cssp.repository.UbicacionRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @WebServlet(name = "UbicacionEditarServlet", urlPatterns = "/ubicaciones/editar")
 public class UbicacionEditarServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    private static final DateTimeFormatter FORMATO_FECHA =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     protected void doGet(
@@ -81,7 +86,15 @@ public class UbicacionEditarServlet extends HttpServlet {
 
             Ubicacion ubicacion = crearUbicacion(id, provinciaId, distritoId, existente);
 
-            repositorio.actualizar(ubicacion);
+            ubicacion.setActualizacionFecha(
+                    LocalDateTime.now().format(FORMATO_FECHA)
+            );
+            ubicacion.setActualizacionUsuario("sistema");
+
+            if (!repositorio.actualizar(ubicacion)) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
 
             response.sendRedirect(
                     request.getContextPath()
@@ -90,25 +103,49 @@ public class UbicacionEditarServlet extends HttpServlet {
 
         } catch (IllegalArgumentException ex) {
 
-            request.setAttribute(
-                    "error",
-                    "Revise los datos: la provincia es obligatoria y debe ser un número positivo; el distrito, si se indica, también debe serlo."
-            );
-
-            request.setAttribute(
-                    "ubicacion",
+            mostrarError(
+                    request,
+                    response,
                     crearUbicacion(
                             id,
                             convertirEntero(provinciaIdTexto),
                             convertirEnteroOpcional(distritoIdTexto),
                             existente
-                    )
+                    ),
+                    "Revise los datos: la provincia es obligatoria y debe ser un número positivo; el distrito, si se indica, también debe serlo."
             );
 
-            request.getRequestDispatcher(
-                    "/WEB-INF/views/ubicaciones/editar.jsp"
-            ).forward(request, response);
+        } catch (RuntimeException ex) {
+
+            getServletContext().log("Error al actualizar la ubicación", ex);
+
+            mostrarError(
+                    request,
+                    response,
+                    crearUbicacion(
+                            id,
+                            convertirEntero(provinciaIdTexto),
+                            convertirEnteroOpcional(distritoIdTexto),
+                            existente
+                    ),
+                    "No se pudo actualizar la ubicación. Verifique que la provincia y el distrito existan en el catálogo."
+            );
         }
+    }
+
+    private void mostrarError(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Ubicacion ubicacion,
+            String mensaje)
+            throws ServletException, IOException {
+
+        request.setAttribute("error", mensaje);
+        request.setAttribute("ubicacion", ubicacion);
+
+        request.getRequestDispatcher(
+                "/WEB-INF/views/ubicaciones/editar.jsp"
+        ).forward(request, response);
     }
 
     private Ubicacion crearUbicacion(

@@ -48,12 +48,19 @@ public class UbicacionEliminarServlet extends HttpServlet {
 
         int id = leerId(request.getParameter("id"));
 
-        boolean eliminada = repositorio(request).eliminar(id);
+        String resultado;
+
+        try {
+            resultado = String.valueOf(repositorio(request).eliminar(id));
+        } catch (RuntimeException ex) {
+            getServletContext().log("Error al eliminar la ubicación", ex);
+            resultado = "enuso";
+        }
 
         response.sendRedirect(
                 request.getContextPath()
                 + "/ubicaciones?eliminado="
-                + eliminada
+                + resultado
         );
     }
 

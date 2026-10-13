@@ -11,11 +11,16 @@ import pe.edu.cssp.repository.UbicacionRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @WebServlet(name = "UbicacionNuevoServlet", urlPatterns = "/ubicaciones/nuevo")
 public class UbicacionNuevoServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    private static final DateTimeFormatter FORMATO_FECHA =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     protected void doGet(
@@ -61,8 +66,8 @@ public class UbicacionNuevoServlet extends HttpServlet {
                     0,
                     provinciaId,
                     distritoId,
-                    null,
-                    null,
+                    LocalDateTime.now().format(FORMATO_FECHA),
+                    "sistema",
                     null,
                     null
             );
@@ -75,15 +80,35 @@ public class UbicacionNuevoServlet extends HttpServlet {
 
         } catch (IllegalArgumentException ex) {
 
-            request.setAttribute(
-                    "error",
+            mostrarError(
+                    request,
+                    response,
                     "Revise los datos: la provincia es obligatoria y debe ser un número positivo; el distrito, si se indica, también debe serlo."
             );
 
-            request.getRequestDispatcher(
-                    "/WEB-INF/views/ubicaciones/formulario.jsp"
-            ).forward(request, response);
+        } catch (RuntimeException ex) {
+
+            getServletContext().log("Error al guardar la ubicación", ex);
+
+            mostrarError(
+                    request,
+                    response,
+                    "No se pudo guardar la ubicación. Verifique que la provincia y el distrito existan en el catálogo."
+            );
         }
+    }
+
+    private void mostrarError(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String mensaje)
+            throws ServletException, IOException {
+
+        request.setAttribute("error", mensaje);
+
+        request.getRequestDispatcher(
+                "/WEB-INF/views/ubicaciones/formulario.jsp"
+        ).forward(request, response);
     }
 
     private UbicacionRepository repositorio(HttpServletRequest request) {

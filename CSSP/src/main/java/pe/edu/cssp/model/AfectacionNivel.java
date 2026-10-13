@@ -14,10 +14,10 @@ public class AfectacionNivel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
-    @Column(name = "nombre", unique = true, nullable = false, length = 100)
+    @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
-    
-    @Column(name = "codigo", length = 20)
+
+    @Column(name = "codigo", unique = true, nullable = false, length = 20)
     private String codigo;
     
     @Column(name = "creacion_fecha", nullable = false)

@@ -12,6 +12,7 @@
         <!-- Entidades registradas en JPA -->
         <class>pe.edu.cssp.model.AfectacionNivel</class>
         <class>pe.edu.cssp.model.Estacion</class>
+        <class>pe.edu.cssp.model.Ubicacion</class>
 
         <properties>
 

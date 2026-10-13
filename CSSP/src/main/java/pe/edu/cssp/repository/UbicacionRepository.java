@@ -1,51 +1,106 @@
 package pe.edu.cssp.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import pe.edu.cssp.config.JpaUtil;
 import pe.edu.cssp.model.Ubicacion;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class UbicacionRepository {
 
-    private final List<Ubicacion> ubicaciones = new CopyOnWriteArrayList<>();
-    private int siguienteId = 1;
-
-    public UbicacionRepository() {
-        agregar(new Ubicacion(0, 1, 1, "2026-01-01 08:00:00", "sistema", null, null));
-        agregar(new Ubicacion(0, 1, 2, "2026-01-01 08:00:00", "sistema", null, null));
-        agregar(new Ubicacion(0, 1, 3, "2026-01-01 08:00:00", "sistema", null, null));
-        agregar(new Ubicacion(0, 1, 4, "2026-01-01 08:00:00", "sistema", null, null));
-        agregar(new Ubicacion(0, 1, 5, "2026-01-01 08:00:00", "sistema", null, null));
-    }
-
     public List<Ubicacion> listar() {
-        return List.copyOf(ubicaciones);
+        try (EntityManager em = JpaUtil.crearEntityManager()) {
+            return em.createQuery(
+                "SELECT u FROM Ubicacion u ORDER BY u.id",
+                Ubicacion.class
+            ).getResultList();
+        }
     }
 
     public Optional<Ubicacion> buscarId(int id) {
-        return ubicaciones.stream()
-                .filter(u -> u.getId() == id)
-                .findFirst();
+        try (EntityManager em = JpaUtil.crearEntityManager()) {
+            return Optional.ofNullable(
+                em.find(Ubicacion.class, id)
+            );
+        }
     }
 
     public Ubicacion agregar(Ubicacion ubicacion) {
-        ubicacion.setId(siguienteId++);
-        ubicaciones.add(ubicacion);
-        return ubicacion;
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+            em.persist(ubicacion);
+            tx.commit();
+            return ubicacion;
+        } catch (RuntimeException e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
     }
 
     public boolean actualizar(Ubicacion ubicacion) {
-        Optional<Ubicacion> actual = buscarId(ubicacion.getId());
-        if (actual.isEmpty()) {
-            return false;
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+            Ubicacion actual = em.find(
+                Ubicacion.class, ubicacion.getId()
+            );
+
+            if (actual == null) {
+                tx.rollback();
+                return false;
+            }
+
+            em.merge(ubicacion);
+            tx.commit();
+            return true;
+
+        } catch (RuntimeException e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
         }
-        int indice = ubicaciones.indexOf(actual.get());
-        ubicaciones.set(indice, ubicacion);
-        return true;
     }
 
     public boolean eliminar(int id) {
-        return ubicaciones.removeIf(u -> u.getId() == id);
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+            Ubicacion ubicacion = em.find(Ubicacion.class, id);
+
+            if (ubicacion == null) {
+                tx.rollback();
+                return false;
+            }
+
+            em.remove(ubicacion);
+            tx.commit();
+            return true;
+
+        } catch (RuntimeException e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
     }
 }

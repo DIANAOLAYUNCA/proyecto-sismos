@@ -38,6 +38,12 @@
         </div>
     </c:if>
 
+    <c:if test="${param.eliminado eq 'enuso'}">
+        <div class="alerta alerta-error">
+            No se puede eliminar la ubicación: está siendo utilizada por estaciones, eventos u otros registros.
+        </div>
+    </c:if>
+
     <c:if test="${not empty error}">
         <div class="alerta alerta-error">
             <c:out value="${error}"/>

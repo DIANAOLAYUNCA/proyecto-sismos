@@ -38,6 +38,12 @@
         </div>
     </c:if>
 
+    <c:if test="${param.eliminado eq 'enuso'}">
+        <div class="alerta alerta-error">
+            No se puede eliminar el nivel de afectación: está siendo utilizado por eventos o reportes.
+        </div>
+    </c:if>
+
     <section class="tarjeta">
         <form method="get"
               action="${pageContext.request.contextPath}/afectacionniveles"
