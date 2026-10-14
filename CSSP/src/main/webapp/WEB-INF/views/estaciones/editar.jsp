@@ -67,7 +67,7 @@
 
                 <input name="ubicacionId"
                        type="number"
-                       value="${estacion.ubicacionId}"
+                       value="${estacion.ubicacion.id}"
                        required>
             </label>
 

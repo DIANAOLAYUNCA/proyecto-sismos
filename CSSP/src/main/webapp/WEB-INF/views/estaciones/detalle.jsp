@@ -72,7 +72,7 @@
             <div>
                 <dt>Ubicación ID</dt>
                 <dd>
-                    <c:out value="${estacion.ubicacionId}"/>
+                    <c:out value="${estacion.ubicacion.id}"/>
                 </dd>
             </div>
 

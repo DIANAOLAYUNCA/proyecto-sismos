@@ -7,6 +7,7 @@ import pe.edu.cssp.repository.AfectacionNivelRepository;
 import pe.edu.cssp.repository.EstacionRepository;
 import pe.edu.cssp.repository.EventoRepository;
 import pe.edu.cssp.repository.UbicacionRepository;
+import pe.edu.cssp.config.JpaUtil;
 
 @WebListener
 public class AplicacionListener implements ServletContextListener {
@@ -37,5 +38,11 @@ public class AplicacionListener implements ServletContextListener {
                 REPOSITORIO_AFECTACION_NIVELES,
                 new AfectacionNivelRepository()
         );
+        
+    }
+    
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+        JpaUtil.cerrar();
     }
 }

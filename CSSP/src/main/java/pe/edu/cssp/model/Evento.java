@@ -13,74 +13,74 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Evento")
 public class Evento {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "estacion_id", nullable = false)
-    private int estacionId;
-    
-    @Column(name = "codigo", length = 30)
+    private Estacion estacion;
+
+    @Column(name = "codigo", nullable = false, unique = true, length = 30)
     private String codigo;
-    
-    @Column(name = "fecha_hora")
+
+    @Column(name = "fecha_hora", nullable = false)
     private String fechaHora;
-    
-    @Column(name = "magnitud")
+
+    @Column(name = "magnitud", nullable = false)
     private double magnitud;
-    
-    @Column(name = "profundidad")
+
+    @Column(name = "profundidad", nullable = false)
     private double profundidad;
-    
-    @Column(name = "latitud")
+
+    @Column(name = "latitud", nullable = false)
     private double latitud;
-    
-    @Column(name = "longitud")
+
+    @Column(name = "longitud", nullable = false)
     private double longitud;
-    
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "ubicacion_id", nullable = false)
-    private int ubicacionId;
+    private Ubicacion ubicacion;
+
     
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "afectacion_nivel_id", nullable = false)
-    private int afectacionNivelId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "afectacion_nivel_id")
+    private AfectacionNivel afectacionNivel;
 
     @Column(name = "estado", nullable = false, length = 20)
     private String estado;
-    
+
     @Column(name = "creacion_fecha", nullable = false)
     private String creacionFecha;
-    
+
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
-    
+
     @Column(name = "actualizacion_fecha")
     private String actualizacionFecha;
-    
+
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
 
-    public Evento() {
-    }
+    public Evento() { }
 
-    public Evento(int id, int estacionId, String codigo, String fechaHora,
-                  double magnitud, double profundidad, double latitud,
-                  double longitud, int ubicacionId, int afectacionNivelId,
-                  String estado, String creacionFecha, String creacionUsuario,
-                  String actualizacionFecha, String actualizacionUsuario) {
-
+    public Evento(int id, Estacion estacion, String codigo, String fechaHora,
+            double magnitud, double profundidad, double latitud, double longitud,
+            Ubicacion ubicacion, AfectacionNivel afectacionNivel, String estado,
+            String creacionFecha, String creacionUsuario,
+            String actualizacionFecha, String actualizacionUsuario) {
         this.id = id;
-        this.estacionId = estacionId;
+        this.estacion = estacion;
         this.codigo = codigo;
         this.fechaHora = fechaHora;
         this.magnitud = magnitud;
         this.profundidad = profundidad;
         this.latitud = latitud;
         this.longitud = longitud;
-        this.ubicacionId = ubicacionId;
-        this.afectacionNivelId = afectacionNivelId;
+        this.ubicacion = ubicacion;
+        this.afectacionNivel = afectacionNivel;
         this.estado = estado;
         this.creacionFecha = creacionFecha;
         this.creacionUsuario = creacionUsuario;
@@ -96,12 +96,12 @@ public class Evento {
         this.id = id;
     }
 
-    public int getEstacionId() {
-        return estacionId;
+    public Estacion getEstacion() {
+        return estacion;
     }
 
-    public void setEstacionId(int estacionId) {
-        this.estacionId = estacionId;
+    public void setEstacion(Estacion estacion) {
+        this.estacion = estacion;
     }
 
     public String getCodigo() {
@@ -152,20 +152,20 @@ public class Evento {
         this.longitud = longitud;
     }
 
-    public int getUbicacionId() {
-        return ubicacionId;
+    public Ubicacion getUbicacion() {
+        return ubicacion;
     }
 
-    public void setUbicacionId(int ubicacionId) {
-        this.ubicacionId = ubicacionId;
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
     }
 
-    public int getAfectacionNivelId() {
-        return afectacionNivelId;
+    public AfectacionNivel getAfectacionNivel() {
+        return afectacionNivel;
     }
 
-    public void setAfectacionNivelId(int afectacionNivelId) {
-        this.afectacionNivelId = afectacionNivelId;
+    public void setAfectacionNivel(AfectacionNivel afectacionNivel) {
+        this.afectacionNivel = afectacionNivel;
     }
 
     public String getEstado() {

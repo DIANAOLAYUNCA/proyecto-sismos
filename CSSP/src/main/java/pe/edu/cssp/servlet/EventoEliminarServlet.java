@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import pe.edu.cssp.listener.AplicacionListener;
 import pe.edu.cssp.model.Evento;
 import pe.edu.cssp.repository.EventoRepository;
+import pe.edu.cssp.repository.PersistenciaException;
 
 import java.io.IOException;
 
@@ -45,24 +46,18 @@ public class EventoEliminarServlet extends HttpServlet {
         ).forward(request, response);
     }
 
-    @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
+        @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        int id = leerId(
-                request.getParameter("id")
-        );
+        int id = leerId(request.getParameter("id"));
 
-        boolean eliminado =
-                repositorio(request).eliminar(id);
-
-        response.sendRedirect(
-                request.getContextPath()
-                + "/eventos?eliminado="
-                + eliminado
-        );
+        try {
+            boolean eliminado = repositorio(request).eliminar(id);
+            response.sendRedirect(request.getContextPath() + "/eventos?eliminado=" + eliminado);
+        } catch (PersistenciaException ex) {
+            response.sendRedirect(request.getContextPath() + "/eventos?eliminado=false");
+        }
     }
 
     private EventoRepository repositorio(

@@ -47,12 +47,15 @@
                    value="${evento.id}">
 
             <label>
-                Estación ID
+                Estación
 
-                <input name="estacionId"
-                       type="number"
-                       value="${evento.estacionId}"
-                       required>
+                <select name="estacionId" required>
+                    <c:forEach items="${estaciones}" var="estacion">
+                        <option value="${estacion.id}" ${evento.estacion.id eq estacion.id ? 'selected' : ''}>
+                            <c:out value="${estacion.codigo} - ${estacion.nombre}"/>
+                        </option>
+                    </c:forEach>
+                </select>
             </label>
 
             <label>
@@ -112,21 +115,27 @@
             </label>
 
             <label>
-                Ubicación ID
+                Ubicación
 
-                <input name="ubicacionId"
-                       type="number"
-                       value="${evento.ubicacionId}"
-                       required>
+                <select name="ubicacionId" required>
+                    <c:forEach items="${ubicaciones}" var="ubicacion">
+                        <option value="${ubicacion.id}" ${evento.ubicacion.id eq ubicacion.id ? 'selected' : ''}>
+                            Ubicación ${ubicacion.id} (Prov. ${ubicacion.provinciaId}, Dist. ${ubicacion.distritoId})
+                        </option>
+                    </c:forEach>
+                </select>
             </label>
 
             <label>
-                Nivel de afectación ID
+                Nivel de afectación
 
-                <input name="afectacionNivelId"
-                       type="number"
-                       value="${evento.afectacionNivelId}"
-                       required>
+                <select name="afectacionNivelId" required>
+                    <c:forEach items="${niveles}" var="nivel">
+                        <option value="${nivel.id}" ${evento.afectacionNivel.id eq nivel.id ? 'selected' : ''}>
+                            <c:out value="${nivel.nombre}"/>
+                        </option>
+                    </c:forEach>
+                </select>
             </label>
 
             <label>

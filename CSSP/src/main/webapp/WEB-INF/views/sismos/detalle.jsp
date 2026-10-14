@@ -48,7 +48,7 @@
             <div>
                 <dt>Estación ID</dt>
                 <dd>
-                    <c:out value="${evento.estacionId}"/>
+                    <c:out value="${evento.estacion.id}"/>
                 </dd>
             </div>
 
@@ -97,14 +97,14 @@
             <div>
                 <dt>Ubicación ID</dt>
                 <dd>
-                    <c:out value="${evento.ubicacionId}"/>
+                    <c:out value="${evento.ubicacion.id}"/>
                 </dd>
             </div>
 
             <div>
                 <dt>Nivel de afectación</dt>
                 <dd>
-                    <c:out value="${evento.afectacionNivelId}"/>
+                    <c:out value="${evento.afectacionNivel.id}"/>
                 </dd>
             </div>
 
