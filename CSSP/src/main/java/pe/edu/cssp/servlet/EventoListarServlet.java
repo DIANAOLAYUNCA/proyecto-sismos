@@ -106,7 +106,7 @@ public class EventoListarServlet extends HttpServlet {
 
                 eventos = eventos.stream()
                         .filter(evento ->
-                                evento.getUbicacionId() == ubicacion)
+                                evento.getUbicacion().getId() == ubicacion)
                         .toList();
 
             } catch (NumberFormatException ex) {

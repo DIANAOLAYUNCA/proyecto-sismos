@@ -169,7 +169,7 @@
                                 </td>
 
                                 <td>
-                                    <c:out value="${evento.ubicacionId}"/>
+                                    <c:out value="${evento.ubicacion.id}"/>
                                 </td>
 
                                 <td>

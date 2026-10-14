@@ -2,9 +2,12 @@ package pe.edu.cssp.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,22 +18,23 @@ public class Estacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "codigo", nullable = false, unique = true, length = 20)
+    private String codigo;
+
     @Column(name = "nombre", nullable = false, length = 150)
     private String nombre;
 
-    @Column(name = "codigo", length = 20)
-    private String codigo;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "ubicacion_id", nullable = false)
+    private Ubicacion ubicacion;
 
-    @Column(name = "ubicacion_id", nullable = false)
-    private int ubicacionId;
-
-    @Column(name = "latitud", precision = 9, scale = 6)
+    @Column(name = "latitud", nullable = false, precision = 9, scale = 6)
     private double latitud;
 
-    @Column(name = "longitud", precision = 9, scale = 6)
+    @Column(name = "longitud", nullable = false, precision = 9, scale = 6)
     private double longitud;
 
-    @Column(name = "instalacion_fecha")
+    @Column(name = "instalacion_fecha", nullable = false)
     private String instalacionFecha;
 
     @Column(name = "estado", nullable = false, length = 20)
@@ -48,27 +52,17 @@ public class Estacion {
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
 
-    public Estacion() {
-    }
+    public Estacion() { }
 
-    public Estacion(
-            int id,
-            String codigo,
-            String nombre,
-            int ubicacionId,
-            double latitud,
-            double longitud,
-            String instalacionFecha,
-            String estado,
-            String creacionFecha,
-            String creacionUsuario,
-            String actualizacionFecha,
-            String actualizacionUsuario) {
-
+    public Estacion(int id, String codigo, String nombre, Ubicacion ubicacion,
+            double latitud, double longitud, String instalacionFecha,
+            String estado, String creacionFecha, String creacionUsuario,
+            String actualizacionFecha, String actualizacionUsuario)
+    {
         this.id = id;
         this.codigo = codigo;
         this.nombre = nombre;
-        this.ubicacionId = ubicacionId;
+        this.ubicacion = ubicacion;
         this.latitud = latitud;
         this.longitud = longitud;
         this.instalacionFecha = instalacionFecha;
@@ -79,98 +73,97 @@ public class Estacion {
         this.actualizacionUsuario = actualizacionUsuario;
     }
 
-    public int getId() {
-        return id;
+    public int getId() { 
+        return id; 
     }
-
+    
     public void setId(int id) {
-        this.id = id;
+        this.id = id; 
     }
-
-    public String getCodigo() {
+    
+    public String getCodigo() { 
         return codigo;
     }
-
-    public void setCodigo(String codigo) {
+    public void setCodigo(String codigo) { 
         this.codigo = codigo;
     }
-
+    
     public String getNombre() {
-        return nombre;
+        return nombre; 
     }
-
-    public void setNombre(String nombre) {
+    
+    public void setNombre(String nombre) { 
         this.nombre = nombre;
     }
-
-    public int getUbicacionId() {
-        return ubicacionId;
+    
+    public Ubicacion getUbicacion() { 
+        return ubicacion; 
     }
-
-    public void setUbicacionId(int ubicacionId) {
-        this.ubicacionId = ubicacionId;
+    
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
     }
-
+    
     public double getLatitud() {
         return latitud;
     }
-
-    public void setLatitud(double latitud) {
+    
+    public void setLatitud(double latitud) { 
         this.latitud = latitud;
     }
-
+    
     public double getLongitud() {
-        return longitud;
+        return longitud; 
     }
-
+    
     public void setLongitud(double longitud) {
         this.longitud = longitud;
     }
-
+    
     public String getInstalacionFecha() {
         return instalacionFecha;
     }
-
-    public void setInstalacionFecha(String instalacionFecha) {
-        this.instalacionFecha = instalacionFecha;
+    
+    public void setInstalacionFecha(String instalacionFecha) { 
+        this.instalacionFecha = instalacionFecha; 
     }
-
-    public String getEstado() {
-        return estado;
+    
+    public String getEstado() { 
+        return estado; 
     }
-
-    public void setEstado(String estado) {
+    
+    public void setEstado(String estado) { 
         this.estado = estado;
     }
-
+    
     public String getCreacionFecha() {
-        return creacionFecha;
+        return creacionFecha; 
     }
-
+    
     public void setCreacionFecha(String creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
-
+    
     public String getCreacionUsuario() {
-        return creacionUsuario;
+        return creacionUsuario; 
     }
-
+    
     public void setCreacionUsuario(String creacionUsuario) {
-        this.creacionUsuario = creacionUsuario;
+        this.creacionUsuario = creacionUsuario; 
     }
-
-    public String getActualizacionFecha() {
+    
+    public String getActualizacionFecha() { 
         return actualizacionFecha;
     }
-
+    
     public void setActualizacionFecha(String actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
-
-    public String getActualizacionUsuario() {
-        return actualizacionUsuario;
+    
+    public String getActualizacionUsuario() { 
+        return actualizacionUsuario; 
     }
-
+    
     public void setActualizacionUsuario(String actualizacionUsuario) {
         this.actualizacionUsuario = actualizacionUsuario;
     }

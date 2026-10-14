@@ -99,7 +99,7 @@
                                 </td>
 
                                 <td>
-                                    <c:out value="${estacion.ubicacionId}"/>
+                                    <c:out value="${estacion.ubicacion.id}"/>
                                 </td>
 
                                 <td>

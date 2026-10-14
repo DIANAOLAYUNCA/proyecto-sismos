@@ -1,42 +1,64 @@
 package pe.edu.cssp.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import pe.edu.cssp.config.JpaUtil;
+import pe.edu.cssp.model.AfectacionNivel;
+import pe.edu.cssp.model.Estacion;
 import pe.edu.cssp.model.Evento;
+import pe.edu.cssp.model.Ubicacion;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 
 public class EventoRepository {
 
-    private final List<Evento> eventos = new CopyOnWriteArrayList<>();
-    private int siguienteId = 1;
-
-    public EventoRepository() {
-        agregar(new Evento(0, 335, "SIS-2026-0001", "2026-08-18 14:32:00", 5.60, 34.00, -16.409000, -71.537500, 1, 2, "EN_SEGUIMIENTO", "2026-09-01 08:00:00", "operador", null, null));
-        agregar(new Evento(0, 1942, "SIS-2026-0002", "2026-09-02 03:10:00", 4.20, 60.00, -13.532000, -71.967500, 2, 1, "REGISTRADO", "2026-09-02 04:00:00", "operador", null, null));
-        agregar(new Evento(0, 3259, "SIS-2026-0003", "2026-09-05 18:45:00", 4.80, 45.00, -12.065000, -75.210000, 3, 2, "EN_EVALUACION", "2026-09-05 19:00:00", "operador", null, null));
-        agregar(new Evento(0, 406, "SIS-2026-0004", "2026-09-10 11:20:00", 3.70, 28.00, -14.067000, -75.728000, 4, 1, "CERRADO", "2026-09-10 12:00:00", "operador", null, null));
-        agregar(new Evento(0, 562, "SIS-2026-0005", "2026-09-15 22:05:00", 5.10, 52.00, -18.014000, -70.253000, 5, 3, "EN_SEGUIMIENTO", "2026-09-15 22:30:00", "operador", null, null));
+    public List<Evento> listar() {
+        EntityManager em = JpaUtil.crearEntityManager();
+        try {
+            return em.createQuery(
+                "SELECT e FROM Evento e "
+                + "JOIN FETCH e.estacion "
+                + "JOIN FETCH e.ubicacion "
+                + "LEFT JOIN FETCH e.afectacionNivel "
+                + "ORDER BY e.id",
+                    Evento.class).getResultList();
+        } catch (RuntimeException ex) {
+            throw new PersistenciaException("No se pudieron listar los sismos.", ex);
+        } finally {
+            em.close();
+        }
     }
 
-    public List<Evento> listar() {
-        return List.copyOf(eventos);
+    public Optional<Evento> buscarId(int id) {
+        EntityManager em = JpaUtil.crearEntityManager();
+        try {
+            return Optional.ofNullable(em.find(Evento.class, id));
+        } catch (RuntimeException ex) {
+            throw new PersistenciaException("No se pudo buscar el sismo.", ex);
+        } finally {
+            em.close();
+        }
     }
 
     public Optional<Evento> buscarCod(String codigo) {
         if (codigo == null) {
             return Optional.empty();
         }
-        return eventos.stream()
-                .filter(e -> e.getCodigo().equalsIgnoreCase(codigo.trim()))
-                .findFirst();
-    }
-
-    public Optional<Evento> buscarId(int id) {
-        return eventos.stream()
-                .filter(e -> e.getId() == id)
-                .findFirst();
+        EntityManager em = JpaUtil.crearEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT e FROM Evento e WHERE UPPER(e.codigo) = :codigo",
+                    Evento.class)
+                    .setParameter("codigo", codigo.trim().toUpperCase())
+                    .setMaxResults(1)
+                    .getResultList()
+                    .stream().findFirst();
+        } catch (RuntimeException ex) {
+            throw new PersistenciaException("No se pudo validar el código.", ex);
+        } finally {
+            em.close();
+        }
     }
 
     public boolean existCodigo(String codigo) {
@@ -44,22 +66,71 @@ public class EventoRepository {
     }
 
     public Evento agregar(Evento evento) {
-        evento.setId(siguienteId++);
-        eventos.add(evento);
-        return evento;
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            asignarReferencias(em, evento);
+            em.persist(evento);
+            tx.commit();
+            return evento;
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) tx.rollback();
+            throw new PersistenciaException("No se pudo guardar el sismo. El código debe ser único.", ex);
+        } finally {
+            em.close();
+        }
     }
 
     public boolean actualizar(Evento evento) {
-        Optional<Evento> actual = buscarId(evento.getId());
-        if (actual.isEmpty()) {
-            return false;
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Evento actual = em.find(Evento.class, evento.getId());
+            if (actual == null) {
+                tx.rollback();
+                return false;
+            }
+            asignarReferencias(em, evento);
+            em.merge(evento);
+            tx.commit();
+            return true;
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) tx.rollback();
+            throw new PersistenciaException("No se pudo actualizar el sismo. El código debe ser único.", ex);
+        } finally {
+            em.close();
         }
-        int indice = eventos.indexOf(actual.get());
-        eventos.set(indice, evento);
-        return true;
     }
 
     public boolean eliminar(int id) {
-        return eventos.removeIf(e -> e.getId() == id);
+        EntityManager em = JpaUtil.crearEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Evento evento = em.find(Evento.class, id);
+            if (evento == null) {
+                tx.rollback();
+                return false;
+            }
+            em.remove(evento);
+            tx.commit();
+            return true;
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) tx.rollback();
+            throw new PersistenciaException("No se pudo eliminar el sismo.", ex);
+        } finally {
+            em.close();
+        }
+    }
+
+    private void asignarReferencias(EntityManager em, Evento evento) {
+        evento.setEstacion(em.getReference(Estacion.class, evento.getEstacion().getId()));
+        evento.setUbicacion(em.getReference(Ubicacion.class, evento.getUbicacion().getId()));
+        if (evento.getAfectacionNivel() != null) {
+            evento.setAfectacionNivel(
+                    em.getReference(AfectacionNivel.class, evento.getAfectacionNivel().getId()));
+        }
     }
 }
