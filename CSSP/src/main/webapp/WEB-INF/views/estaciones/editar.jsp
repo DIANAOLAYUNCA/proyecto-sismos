@@ -65,10 +65,13 @@
             <label>
                 Ubicación
 
-                <input name="ubicacionId"
-                       type="number"
-                       value="${estacion.ubicacion.id}"
-                       required>
+                <select name="ubicacionId" required>
+                <c:forEach items="${ubicaciones}" var="ubicacion">
+                    <option value="${ubicacion.id}" ${estacion.ubicacion.id eq ubicacion.id ? 'selected' : ''}>
+                        Ubicación ${ubicacion.id} (Prov. ${ubicacion.provinciaId}, Dist. ${ubicacion.distritoId})
+                    </option>
+                </c:forEach>
+                </select>
             </label>
 
             <label>

@@ -34,8 +34,7 @@ public class EstacionEditarServlet extends HttpServlet {
             return;
         }
         request.setAttribute("estacion", estacion);
-        request.getRequestDispatcher("/WEB-INF/views/estaciones/editar.jsp")
-                .forward(request, response);
+        mostrarFormulario(request, response);
     }
 
     @Override
@@ -83,8 +82,7 @@ public class EstacionEditarServlet extends HttpServlet {
                 request.setAttribute("estacion", desdeTextos(id, codigo, nombre,
                         ubicacionIdTexto, latitudTexto, longitudTexto,
                         instalacionFecha, estado, existente));
-                request.getRequestDispatcher("/WEB-INF/views/estaciones/editar.jsp")
-                        .forward(request, response);
+                mostrarFormulario(request, response);
                 return;
             }
 
@@ -107,19 +105,24 @@ public class EstacionEditarServlet extends HttpServlet {
             request.setAttribute("estacion", desdeTextos(id, codigo, nombre,
                     ubicacionIdTexto, latitudTexto, longitudTexto,
                     instalacionFecha, estado, existente));
-            request.getRequestDispatcher("/WEB-INF/views/estaciones/editar.jsp")
-                    .forward(request, response);
+            mostrarFormulario(request, response);
         } catch (IllegalArgumentException ex) {
             request.setAttribute("error",
                     "Revise los datos: campos obligatorios, ubicación existente, coordenadas válidas y estado correcto.");
             request.setAttribute("estacion", desdeTextos(id, codigo, nombre,
                     ubicacionIdTexto, latitudTexto, longitudTexto,
                     instalacionFecha, estado, existente));
-            request.getRequestDispatcher("/WEB-INF/views/estaciones/editar.jsp")
-                    .forward(request, response);
+            mostrarFormulario(request, response);
         }
     }
 
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    request.setAttribute("ubicaciones", repositorioUbicaciones(request).listar());
+    request.getRequestDispatcher("/WEB-INF/views/estaciones/editar.jsp")
+            .forward(request, response);
+    }
+    
     
     private Estacion desdeTextos(int id, String codigo, String nombre, String ubicacionId,
             String latitud, String longitud, String instalacionFecha, String estado,
@@ -134,6 +137,8 @@ public class EstacionEditarServlet extends HttpServlet {
                 existente.getCreacionFecha(), existente.getCreacionUsuario(),
                 existente.getActualizacionFecha(), existente.getActualizacionUsuario());
     }
+    
+    
 
     private EstacionRepository repositorio(HttpServletRequest request) {
         return (EstacionRepository) request.getServletContext()

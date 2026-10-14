@@ -27,8 +27,7 @@ public class EstacionNuevoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/estaciones/formulario.jsp")
-                .forward(request, response);
+            mostrarFormulario(request, response);
     }
 
     @Override
@@ -70,8 +69,7 @@ public class EstacionNuevoServlet extends HttpServlet {
 
             if (repositorio.existCodigo(codigo)) {
                 request.setAttribute("error", "El codigo ya existe.");
-                request.getRequestDispatcher("/WEB-INF/views/estaciones/formulario.jsp")
-                        .forward(request, response);
+                mostrarFormulario(request, response);
                 return;
             }
 
@@ -91,13 +89,11 @@ public class EstacionNuevoServlet extends HttpServlet {
 
         } catch (PersistenciaException ex) {
             request.setAttribute("error", ex.getMessage());
-            request.getRequestDispatcher("/WEB-INF/views/estaciones/formulario.jsp")
-                    .forward(request, response);
+            mostrarFormulario(request, response);
         } catch (IllegalArgumentException ex) {
             request.setAttribute("error",
                     "Revise los datos: campos obligatorios, ubicación existente, coordenadas válidas y estado correcto.");
-            request.getRequestDispatcher("/WEB-INF/views/estaciones/formulario.jsp")
-                    .forward(request, response);
+            mostrarFormulario(request, response);
         }
     }
 
@@ -130,5 +126,12 @@ public class EstacionNuevoServlet extends HttpServlet {
         request.setAttribute("longitudIngresada", longitud);
         request.setAttribute("instalacionFechaIngresada", instalacionFecha);
         request.setAttribute("estadoIngresado", estado);
+    }
+    
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    request.setAttribute("ubicaciones", repositorioUbicaciones(request).listar());
+    request.getRequestDispatcher("/WEB-INF/views/estaciones/formulario.jsp")
+            .forward(request, response);
     }
 }
