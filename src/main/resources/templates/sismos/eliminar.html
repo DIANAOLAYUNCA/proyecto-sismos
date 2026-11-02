@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar sismo | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Eliminar sismo</h1>
+        <p>El sismo pasará a estado INACTIVO y dejará de mostrarse en el listado.</p>
+    </header>
+    <section class="tarjeta">
+        <p>¿Está seguro de eliminar el sismo <strong th:text="${evento.codigo}"></strong>?</p>
+        <div class="detalle">
+            <dl>
+                <div><dt>Estado</dt><dd th:text="${evento.estado}"></dd></div>
+                <div><dt>Fecha y hora</dt><dd th:text="${evento.fechaHora}"></dd></div>
+                <div><dt>Magnitud</dt><dd th:text="${evento.magnitud}"></dd></div>
+                <div><dt>Profundidad</dt><dd th:text="${evento.profundidad + ' km'}"></dd></div>
+                <div><dt>Ubicación</dt><dd th:text="${evento.ubicacion.nombre}"></dd></div>
+                <div><dt>Estación</dt><dd th:text="${evento.estacion.codigo + ' - ' + evento.estacion.nombre}"></dd></div>
+            </dl>
+        </div>
+        <form method="post" th:action="@{/eventos/{id}/eliminar(id=${evento.id})}" class="acciones">
+            <button class="boton-peligro" type="submit">Eliminar sismo</button>
+            <a th:href="@{/eventos}">Cancelar</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>

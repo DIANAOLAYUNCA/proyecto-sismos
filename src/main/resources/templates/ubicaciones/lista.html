@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicaciones | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Lista de ubicaciones</h1>
+    </header>
+    <nav class="acciones">
+        <a class="boton" th:href="@{/ubicaciones/nuevo}">Nueva ubicación</a>
+    </nav>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+    <section class="tarjeta">
+        <h2>Ubicaciones encontradas: <span th:text="${#lists.size(ubicaciones)}">0</span></h2>
+        <div class="tabla-scroll">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Código</th><th>Nombre</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(ubicaciones)}">
+                        <td colspan="6" class="vacio">No se encontraron ubicaciones.</td>
+                    </tr>
+                    <tr th:each="ubicacion : ${ubicaciones}">
+                        <td th:text="${ubicacion.id}"></td>
+                        <td th:text="${ubicacion.codigo}"></td>
+                        <td th:text="${ubicacion.nombre}"></td>
+                        <td th:text="${ubicacion.tipo}"></td>
+                        <td th:text="${ubicacion.estado}"></td>
+                        <td class="acciones-tabla">
+                            <a th:href="@{/ubicaciones/{id}(id=${ubicacion.id})}">Ver</a>
+                            <a th:href="@{/ubicaciones/{id}/editar(id=${ubicacion.id})}">Editar</a>
+                            <a class="enlace-peligro" th:if="${ubicacion.estado == 'ACTIVO'}" th:href="@{/ubicaciones/{id}/eliminar(id=${ubicacion.id})}">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>
