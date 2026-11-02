@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del reporte de daño | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Detalle del reporte de daño</h1>
+    </header>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <section class="tarjeta detalle">
+        <dl>
+            <div><dt>ID</dt><dd th:text="${reporte.id}"></dd></div>
+            <div><dt>Sismo</dt><dd><a th:href="@{/eventos/{id}(id=${reporte.evento.id})}" th:text="${reporte.evento.codigo + ' - ' + reporte.evento.referencia}"></a></dd></div>
+            <div><dt>Fecha y hora</dt><dd th:text="${reporte.fechaHora}"></dd></div>
+            <div><dt>Tipo de daño</dt><dd th:text="${reporte.tipoDano.nombre + ' (' + reporte.tipoDano.sector + ')'}"></dd></div>
+            <div><dt>Cantidad afectada</dt><dd th:text="${reporte.cantidadAfectada}"></dd></div>
+            <div><dt>Descripción</dt><dd th:text="${reporte.descripcion}"></dd></div>
+            <div><dt>Ubicación</dt><dd th:text="${reporte.ubicacion.codigo + ' - ' + reporte.ubicacion.nombre}"></dd></div>
+            <div><dt>Nivel de afectación</dt><dd th:text="${reporte.afectacionNivel != null ? reporte.afectacionNivel.nombre : ''}"></dd></div>
+            <div><dt>Estado</dt><dd th:text="${reporte.estado}"></dd></div>
+            <div><dt>Fecha de creación</dt><dd th:text="${reporte.creacionFecha}"></dd></div>
+            <div><dt>Usuario de creación</dt><dd th:text="${reporte.creacionUsuario}"></dd></div>
+            <div><dt>Fecha de actualización</dt><dd th:text="${reporte.actualizacionFecha}"></dd></div>
+            <div><dt>Usuario de actualización</dt><dd th:text="${reporte.actualizacionUsuario}"></dd></div>
+        </dl>
+    </section>
+    <nav class="acciones">
+        <a class="boton" th:if="${reporte.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/editar(id=${reporte.id})}">Editar</a>
+        <a class="enlace-peligro" th:if="${reporte.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/eliminar(id=${reporte.id})}">Eliminar</a>
+        <a th:href="@{/reportes-dano(eventoId=${reporte.evento.id})}">Reportes de este sismo</a>
+        <a th:href="@{/reportes-dano}">Volver a la lista</a>
+    </nav>
+</main>
+</body>
+</html>

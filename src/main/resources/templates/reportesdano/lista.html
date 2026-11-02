@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes de daño | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Reportes de daño</h1>
+    </header>
+    <nav class="acciones">
+        <a class="boton" th:href="${eventoId != null} ? @{/reportes-dano/nuevo(eventoId=${eventoId})} : @{/reportes-dano/nuevo}">Nuevo reporte de daño</a>
+    </nav>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+    <section class="tarjeta">
+        <form method="get" th:action="@{/reportes-dano}" class="filtro">
+            <label>Sismo
+                <select name="eventoId">
+                    <option value="">Todos los sismos</option>
+                    <option th:each="e : ${eventos}" th:value="${e.id}"
+                            th:selected="${eventoId != null and e.id == eventoId}"
+                            th:text="${e.codigo + ' - ' + e.referencia}"></option>
+                </select>
+            </label>
+            <button type="submit">Filtrar</button>
+            <a th:href="@{/reportes-dano}">Limpiar</a>
+        </form>
+    </section>
+    <section class="tarjeta">
+        <h2>Reportes encontrados: <span th:text="${#lists.size(reportes)}">0</span></h2>
+        <p class="nota">Total de personas afectadas (sin contar reportes descartados): <strong th:text="${totalAfectados}">0</strong></p>
+        <div class="tabla-scroll">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Sismo</th><th>Fecha y hora</th><th>Tipo de daño</th><th>Afectados</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(reportes)}">
+                        <td colspan="7" class="vacio">No se encontraron reportes de daño.</td>
+                    </tr>
+                    <tr th:each="r : ${reportes}">
+                        <td th:text="${r.id}"></td>
+                        <td th:text="${r.evento.codigo}"></td>
+                        <td th:text="${r.fechaHora}"></td>
+                        <td th:text="${r.tipoDano.nombre}"></td>
+                        <td th:text="${r.cantidadAfectada}"></td>
+                        <td th:text="${r.estado}"></td>
+                        <td class="acciones-tabla">
+                            <a th:href="@{/reportes-dano/{id}(id=${r.id})}">Ver</a>
+                            <a th:if="${r.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/editar(id=${r.id})}">Editar</a>
+                            <a class="enlace-peligro" th:if="${r.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/eliminar(id=${r.id})}">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

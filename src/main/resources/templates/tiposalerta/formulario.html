@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipo de alerta | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1 th:text="${tipoAlertaId == null} ? 'Nuevo tipo de alerta' : 'Editar tipo de alerta'">Nuevo tipo de alerta</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+        <form method="post" th:object="${tipoAlertaForm}"
+              th:action="${tipoAlertaId == null} ? @{/tipos-alerta} : @{/tipos-alerta/{id}/editar(id=${tipoAlertaId})}"
+              class="formulario formulario-columna">
+            <input type="hidden" th:if="${tipoAlertaId != null}" th:field="*{id}">
+            <label>Código
+                <input th:field="*{codigo}" th:errorclass="campo-invalido" maxlength="20" required>
+                <span class="mensaje-campo" th:errors="*{codigo}"></span>
+            </label>
+            <label>Nombre
+                <input th:field="*{nombre}" th:errorclass="campo-invalido" maxlength="100" required>
+                <span class="mensaje-campo" th:errors="*{nombre}"></span>
+            </label>
+            <label>Color
+                <select th:field="*{color}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option value="VERDE">VERDE</option>
+                    <option value="AMARILLO">AMARILLO</option>
+                    <option value="NARANJA">NARANJA</option>
+                    <option value="ROJO">ROJO</option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{color}"></span>
+            </label>
+            <label>Prioridad
+                <input type="number" min="1" step="1" th:field="*{prioridad}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{prioridad}"></span>
+            </label>
+            <label>Descripción
+                <input th:field="*{descripcion}" th:errorclass="campo-invalido" maxlength="255">
+                <span class="mensaje-campo" th:errors="*{descripcion}"></span>
+            </label>
+            <label>Estado
+                <select th:field="*{estado}" required>
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </label>
+            <div class="acciones">
+                <button type="submit" th:text="${tipoAlertaId == null} ? 'Registrar tipo de alerta' : 'Guardar cambios'">Registrar tipo de alerta</button>
+                <a th:href="@{/tipos-alerta}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

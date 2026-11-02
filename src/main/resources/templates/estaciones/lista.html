@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estaciones | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Lista de estaciones</h1>
+    </header>
+    <nav class="acciones">
+        <a class="boton" th:href="@{/estaciones/nuevo}">Nueva estación</a>
+    </nav>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+    <section class="tarjeta">
+        <h2>Estaciones encontradas: <span th:text="${#lists.size(estaciones)}">0</span></h2>
+        <div class="tabla-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Código</th><th>Nombre</th><th>Ubicación</th>
+                        <th>Latitud</th><th>Longitud</th><th>Estado</th><th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(estaciones)}">
+                        <td colspan="8" class="vacio">No se encontraron estaciones.</td>
+                    </tr>
+                    <tr th:each="estacion : ${estaciones}">
+                        <td th:text="${estacion.id}"></td>
+                        <td th:text="${estacion.codigo}"></td>
+                        <td th:text="${estacion.nombre}"></td>
+                        <td th:text="${estacion.ubicacion.nombre}"></td>
+                        <td th:text="${estacion.latitud}"></td>
+                        <td th:text="${estacion.longitud}"></td>
+                        <td th:text="${estacion.estado}"></td>
+                        <td class="acciones-tabla">
+                            <a th:href="@{/estaciones/{id}(id=${estacion.id})}">Ver</a>
+                            <a th:href="@{/estaciones/{id}/editar(id=${estacion.id})}">Editar</a>
+                            <a class="enlace-peligro" th:if="${estacion.estado == 'ACTIVA'}" th:href="@{/estaciones/{id}/eliminar(id=${estacion.id})}">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

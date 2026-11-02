@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estación | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1 th:text="${estacionId == null} ? 'Nueva estación' : 'Editar estación'">Nueva estación</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+        <form method="post" th:object="${estacionForm}"
+              th:action="${estacionId == null} ? @{/estaciones} : @{/estaciones/{id}/editar(id=${estacionId})}"
+              class="formulario formulario-columna">
+            <input type="hidden" th:if="${estacionId != null}" th:field="*{id}">
+            <label>Código
+                <input th:field="*{codigo}" th:errorclass="campo-invalido" maxlength="20" required>
+                <span class="mensaje-campo" th:errors="*{codigo}"></span>
+            </label>
+            <label>Nombre
+                <input th:field="*{nombre}" th:errorclass="campo-invalido" maxlength="150" required>
+                <span class="mensaje-campo" th:errors="*{nombre}"></span>
+            </label>
+            <label>Ubicación
+                <select th:field="*{ubicacionId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="u : ${ubicaciones}" th:value="${u.id}" th:text="${u.codigo + ' - ' + u.nombre}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{ubicacionId}"></span>
+            </label>
+            <label>Latitud
+                <input type="number" step="0.000001" th:field="*{latitud}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{latitud}"></span>
+            </label>
+            <label>Longitud
+                <input type="number" step="0.000001" th:field="*{longitud}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{longitud}"></span>
+            </label>
+            <label>Fecha de instalación
+                <input type="date" th:field="*{instalacionFecha}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{instalacionFecha}"></span>
+            </label>
+            <label>Estado
+                <select th:field="*{estado}" required>
+                    <option value="ACTIVA">Activa</option>
+                    <option value="INACTIVA">Inactiva</option>
+                </select>
+            </label>
+            <div class="acciones">
+                <button type="submit" th:text="${estacionId == null} ? 'Registrar estación' : 'Guardar cambios'">Registrar estación</button>
+                <a th:href="@{/estaciones}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

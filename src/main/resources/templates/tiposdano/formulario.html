@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipo de daño | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1 th:text="${tipoDanoId == null} ? 'Nuevo tipo de daño' : 'Editar tipo de daño'">Nuevo tipo de daño</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+        <form method="post" th:object="${tipoDanoForm}"
+              th:action="${tipoDanoId == null} ? @{/tipos-dano} : @{/tipos-dano/{id}/editar(id=${tipoDanoId})}"
+              class="formulario formulario-columna">
+            <input type="hidden" th:if="${tipoDanoId != null}" th:field="*{id}">
+            <label>Código
+                <input th:field="*{codigo}" th:errorclass="campo-invalido" maxlength="20" required>
+                <span class="mensaje-campo" th:errors="*{codigo}"></span>
+            </label>
+            <label>Nombre
+                <input th:field="*{nombre}" th:errorclass="campo-invalido" maxlength="100" required>
+                <span class="mensaje-campo" th:errors="*{nombre}"></span>
+            </label>
+            <label>Sector
+                <select th:field="*{sector}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option value="SALUD">SALUD</option>
+                    <option value="VIVIENDA">VIVIENDA</option>
+                    <option value="EDUCACION">EDUCACION</option>
+                    <option value="INFRAESTRUCTURA">INFRAESTRUCTURA</option>
+                    <option value="SERVICIOS_BASICOS">SERVICIOS_BASICOS</option>
+                    <option value="AGROPECUARIO">AGROPECUARIO</option>
+                    <option value="POBLACION">POBLACION</option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{sector}"></span>
+            </label>
+            <label>Descripción
+                <input th:field="*{descripcion}" th:errorclass="campo-invalido" maxlength="255">
+                <span class="mensaje-campo" th:errors="*{descripcion}"></span>
+            </label>
+            <label>Estado
+                <select th:field="*{estado}" required>
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </label>
+            <div class="acciones">
+                <button type="submit" th:text="${tipoDanoId == null} ? 'Registrar tipo de daño' : 'Guardar cambios'">Registrar tipo de daño</button>
+                <a th:href="@{/tipos-dano}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

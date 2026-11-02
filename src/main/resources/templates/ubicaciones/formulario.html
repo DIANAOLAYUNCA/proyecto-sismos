@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1 th:text="${ubicacionId == null} ? 'Nueva ubicación' : 'Editar ubicación'">Nueva ubicación</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+        <form method="post" th:object="${ubicacionForm}"
+              th:action="${ubicacionId == null} ? @{/ubicaciones} : @{/ubicaciones/{id}/editar(id=${ubicacionId})}"
+              class="formulario formulario-columna">
+            <input type="hidden" th:if="${ubicacionId != null}" th:field="*{id}">
+            <label>Código
+                <input th:field="*{codigo}" th:errorclass="campo-invalido" maxlength="10" required>
+                <span class="mensaje-campo" th:errors="*{codigo}"></span>
+            </label>
+            <label>Nombre
+                <input th:field="*{nombre}" th:errorclass="campo-invalido" maxlength="100" required>
+                <span class="mensaje-campo" th:errors="*{nombre}"></span>
+            </label>
+            <label>Tipo
+                <select th:field="*{tipo}" required>
+                    <option value="DEPARTAMENTO">DEPARTAMENTO</option>
+                    <option value="PROVINCIA_CONSTITUCIONAL">PROVINCIA_CONSTITUCIONAL</option>
+                </select>
+            </label>
+            <label>Estado
+                <select th:field="*{estado}" required>
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </label>
+            <div class="acciones">
+                <button type="submit" th:text="${ubicacionId == null} ? 'Registrar ubicación' : 'Guardar cambios'">Registrar ubicación</button>
+                <a th:href="@{/ubicaciones}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

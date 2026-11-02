@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de tipo de daño | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Detalle del tipo de daño</h1>
+    </header>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <section class="tarjeta detalle">
+        <dl>
+            <div><dt>ID</dt><dd th:text="${tipoDano.id}"></dd></div>
+            <div><dt>Código</dt><dd th:text="${tipoDano.codigo}"></dd></div>
+            <div><dt>Nombre</dt><dd th:text="${tipoDano.nombre}"></dd></div>
+            <div><dt>Sector</dt><dd th:text="${tipoDano.sector}"></dd></div>
+            <div><dt>Descripción</dt><dd th:text="${tipoDano.descripcion}"></dd></div>
+            <div><dt>Estado</dt><dd th:text="${tipoDano.estado}"></dd></div>
+            <div><dt>Fecha de creación</dt><dd th:text="${tipoDano.creacionFecha}"></dd></div>
+            <div><dt>Usuario de creación</dt><dd th:text="${tipoDano.creacionUsuario}"></dd></div>
+            <div><dt>Fecha de actualización</dt><dd th:text="${tipoDano.actualizacionFecha}"></dd></div>
+            <div><dt>Usuario de actualización</dt><dd th:text="${tipoDano.actualizacionUsuario}"></dd></div>
+        </dl>
+    </section>
+    <nav class="acciones">
+        <a class="boton" th:href="@{/tipos-dano/{id}/editar(id=${tipoDano.id})}">Editar</a>
+        <a class="enlace-peligro" th:if="${tipoDano.estado == 'ACTIVO'}" th:href="@{/tipos-dano/{id}/eliminar(id=${tipoDano.id})}">Eliminar</a>
+        <a th:href="@{/tipos-dano}">Volver a la lista</a>
+    </nav>
+</main>
+</body>
+</html>
