@@ -131,6 +131,47 @@ class ReporteDanoServiceTest extends BaseDatosTest {
     }
 
     @Test
+    void reactivarDevuelveElReporteDescartadoARegistradoYVuelveAContar() {
+        Evento sismo = evento("REGISTRADO", null);
+        TipoDano tipo = tipoDano("ACTIVO");
+        ReporteDano r = servicio.registrar(form(sismo, tipo, 30));
+        servicio.eliminar(r.getId());
+        assertEquals(0, servicio.totalAfectados(servicio.listar(sismo.getId())));
+
+        servicio.reactivar(r.getId());
+
+        assertEquals("REGISTRADO", servicio.buscarPorId(r.getId()).getEstado());
+        assertEquals(30, servicio.totalAfectados(servicio.listar(sismo.getId())));
+        servicio.actualizar(r.getId(), form(sismo, tipo, 31));
+    }
+
+    @Test
+    void soloSePuedeReactivarUnReporteDescartado() {
+        Evento sismo = evento("REGISTRADO", null);
+        ReporteDano r = servicio.registrar(form(sismo, tipoDano("ACTIVO"), 10));
+        assertThrows(ReglaNegocioException.class, () -> servicio.reactivar(r.getId()));
+    }
+
+    @Test
+    void noReactivaSiElSismoOElTipoDeDanoYaNoEstanVigentes() {
+        Evento sismo = evento("REGISTRADO", null);
+        TipoDano tipo = tipoDano("ACTIVO");
+        ReporteDano r = servicio.registrar(form(sismo, tipo, 10));
+        servicio.eliminar(r.getId());
+
+        tipo.setEstado("INACTIVO");
+        tiposDano.save(tipo);
+        assertThrows(ReglaNegocioException.class, () -> servicio.reactivar(r.getId()));
+
+        tipo.setEstado("ACTIVO");
+        tiposDano.save(tipo);
+        sismo.setEstado("INACTIVO");
+        eventos.save(sismo);
+        assertThrows(ReglaNegocioException.class, () -> servicio.reactivar(r.getId()));
+        assertEquals("DESCARTADO", servicio.buscarPorId(r.getId()).getEstado());
+    }
+
+    @Test
     void editarConservaElSismoOriginalAunqueSeEnvieOtro() {
         Evento original = evento("REGISTRADO", null);
         Evento otro = evento("REGISTRADO", null);

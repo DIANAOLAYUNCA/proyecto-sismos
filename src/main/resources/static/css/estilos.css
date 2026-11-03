@@ -406,6 +406,27 @@ tbody tr:hover td {
     text-decoration: none;
 }
 
+.form-en-linea {
+    display: inline;
+    margin: 0;
+}
+
+.acciones-tabla button.boton-tabla {
+    padding: 4px 11px;
+    border: 1px solid var(--color-borde);
+    border-radius: 7px;
+    background: var(--color-superficie);
+    color: var(--color-acento);
+    font-size: 0.84rem;
+    box-shadow: none;
+}
+
+.acciones-tabla button.boton-tabla:hover {
+    background: var(--color-acento-suave);
+    border-color: #c2cbe0;
+    box-shadow: none;
+}
+
 .acciones-tabla a.enlace-peligro:hover {
     background: var(--color-peligro-fondo);
     border-color: var(--color-peligro-borde);

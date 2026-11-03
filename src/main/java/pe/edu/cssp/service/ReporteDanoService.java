@@ -119,6 +119,27 @@ public class ReporteDanoService {
         reporteDanoRepository.save(reporte);
     }
 
+    @Transactional
+    public ReporteDano reactivar(int id) {
+        ReporteDano reporte = buscarPorId(id);
+        if (!"DESCARTADO".equals(reporte.getEstado())) {
+            throw new ReglaNegocioException("Solo se puede reactivar un reporte descartado.");
+        }
+        if ("INACTIVO".equals(reporte.getEvento().getEstado())) {
+            throw new ReglaNegocioException("No se puede reactivar el reporte porque su sismo está inactivo.");
+        }
+        if (!"ACTIVO".equals(reporte.getTipoDano().getEstado())) {
+            throw new ReglaNegocioException("No se puede reactivar el reporte porque su tipo de daño está inactivo.");
+        }
+        if (!"ACTIVO".equals(reporte.getUbicacion().getEstado())) {
+            throw new ReglaNegocioException("No se puede reactivar el reporte porque su ubicación está inactiva.");
+        }
+        reporte.setEstado("REGISTRADO");
+        reporte.setActualizacionFecha(UbicacionService.fecha());
+        reporte.setActualizacionUsuario("sistema");
+        return reporteDanoRepository.save(reporte);
+    }
+
     private void completar(ReporteDano reporte, ReporteDanoForm form) {
         TipoDano tipoDano = tipoDanoRepository.findById(form.getTipoDanoId())
                 .filter(t -> "ACTIVO".equals(t.getEstado()))

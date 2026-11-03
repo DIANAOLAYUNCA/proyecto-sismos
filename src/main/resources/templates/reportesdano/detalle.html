@@ -15,6 +15,7 @@
         <h1>Detalle del reporte de daño</h1>
     </header>
     <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
     <section class="tarjeta detalle">
         <dl>
             <div><dt>ID</dt><dd th:text="${reporte.id}"></dd></div>
@@ -35,6 +36,9 @@
     <nav class="acciones">
         <a class="boton" th:if="${reporte.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/editar(id=${reporte.id})}">Editar</a>
         <a class="enlace-peligro" th:if="${reporte.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/eliminar(id=${reporte.id})}">Eliminar</a>
+        <form class="form-en-linea" method="post" th:if="${reporte.estado == 'DESCARTADO'}" th:action="@{/reportes-dano/{id}/reactivar(id=${reporte.id})}">
+            <button type="submit">Reactivar</button>
+        </form>
         <a th:href="@{/reportes-dano(eventoId=${reporte.evento.id})}">Reportes de este sismo</a>
         <a th:href="@{/reportes-dano}">Volver a la lista</a>
     </nav>

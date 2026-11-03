@@ -56,6 +56,9 @@
                             <a th:href="@{/reportes-dano/{id}(id=${r.id})}">Ver</a>
                             <a th:if="${r.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/editar(id=${r.id})}">Editar</a>
                             <a class="enlace-peligro" th:if="${r.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/eliminar(id=${r.id})}">Eliminar</a>
+                            <form class="form-en-linea" method="post" th:if="${r.estado == 'DESCARTADO'}" th:action="@{/reportes-dano/{id}/reactivar(id=${r.id})}">
+                                <button type="submit" class="boton-tabla">Reactivar</button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>

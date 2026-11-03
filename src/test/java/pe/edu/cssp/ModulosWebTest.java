@@ -229,6 +229,31 @@ class ModulosWebTest extends BaseDatosTest {
     }
 
     @Test
+    void reactivaUnReporteDescartadoYVuelveAOfrecerEditar() throws Exception {
+        Evento sismo = evento("REGISTRADO", null);
+        ReporteDano r = reporte(sismo, tipoDano("ACTIVO"), 9);
+        mvc.perform(post("/reportes-dano/" + r.getId() + "/eliminar"));
+        mvc.perform(get("/reportes-dano/" + r.getId())).andExpect(status().isOk())
+                .andExpect(content().string(containsString("/reactivar")));
+
+        mvc.perform(post("/reportes-dano/" + r.getId() + "/reactivar"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("exito"));
+        mvc.perform(get("/reportes-dano/" + r.getId())).andExpect(status().isOk())
+                .andExpect(content().string(containsString("/editar")))
+                .andExpect(content().string(not(containsString("/reactivar"))));
+    }
+
+    @Test
+    void reactivarUnReporteQueNoEstaDescartadoMuestraError() throws Exception {
+        Evento sismo = evento("REGISTRADO", null);
+        ReporteDano r = reporte(sismo, tipoDano("ACTIVO"), 9);
+        mvc.perform(post("/reportes-dano/" + r.getId() + "/reactivar"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("error"));
+    }
+
+    @Test
     void elDetalleDelSismoEnlazaConSusReportesDeDano() throws Exception {
         Evento sismo = evento("REGISTRADO", null);
         mvc.perform(get("/eventos/" + sismo.getId())).andExpect(status().isOk())

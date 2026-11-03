@@ -109,6 +109,17 @@ public class ReporteDanoController {
         return "redirect:/reportes-dano";
     }
 
+    @PostMapping("/{id}/reactivar")
+    public String reactivar(@PathVariable int id, RedirectAttributes redirect) {
+        try {
+            reporteDanoService.reactivar(id);
+            redirect.addFlashAttribute("exito", "El reporte de daño fue reactivado y volvió al estado REGISTRADO.");
+        } catch (ReglaNegocioException error) {
+            redirect.addFlashAttribute("error", error.getMessage());
+        }
+        return "redirect:/reportes-dano/" + id;
+    }
+
     private void cargarFormulario(Model model, ReporteDanoForm form, Integer id) {
         model.addAttribute("reporteDanoForm", form);
         model.addAttribute("reporteId", id);
