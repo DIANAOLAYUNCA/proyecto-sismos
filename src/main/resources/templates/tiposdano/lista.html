@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipos de daño | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Lista de tipos de daño</h1>
+    </header>
+    <nav class="acciones">
+        <a class="boton" th:href="@{/tipos-dano/nuevo}">Nuevo tipo de daño</a>
+    </nav>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+    <section class="tarjeta">
+        <h2>Tipos de daño encontrados: <span th:text="${#lists.size(tipos)}">0</span></h2>
+        <div class="tabla-scroll">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Código</th><th>Nombre</th><th>Sector</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(tipos)}">
+                        <td colspan="6" class="vacio">No se encontraron tipos de daño.</td>
+                    </tr>
+                    <tr th:each="tipo : ${tipos}">
+                        <td th:text="${tipo.id}"></td>
+                        <td th:text="${tipo.codigo}"></td>
+                        <td th:text="${tipo.nombre}"></td>
+                        <td th:text="${tipo.sector}"></td>
+                        <td th:text="${tipo.estado}"></td>
+                        <td class="acciones-tabla">
+                            <a th:href="@{/tipos-dano/{id}(id=${tipo.id})}">Ver</a>
+                            <a th:href="@{/tipos-dano/{id}/editar(id=${tipo.id})}">Editar</a>
+                            <a class="enlace-peligro" th:if="${tipo.estado == 'ACTIVO'}" th:href="@{/tipos-dano/{id}/eliminar(id=${tipo.id})}">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

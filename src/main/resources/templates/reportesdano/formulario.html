@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de daño | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1 th:text="${reporteId == null} ? 'Nuevo reporte de daño' : 'Editar reporte de daño'">Nuevo reporte de daño</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+        <form method="post" th:object="${reporteDanoForm}"
+              th:action="${reporteId == null} ? @{/reportes-dano} : @{/reportes-dano/{id}/editar(id=${reporteId})}"
+              class="formulario formulario-columna">
+            <input type="hidden" th:if="${reporteId != null}" th:field="*{id}">
+            <input type="hidden" th:if="${reporteId != null}" th:field="*{eventoId}">
+            <label th:if="${reporteId == null}">Sismo
+                <select th:field="*{eventoId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="e : ${eventos}" th:value="${e.id}" th:text="${e.codigo + ' - ' + e.referencia}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{eventoId}"></span>
+            </label>
+            <p class="nota" th:if="${reporteId != null}">El sismo asociado no puede cambiarse al editar el reporte.</p>
+            <span class="mensaje-campo" th:if="${reporteId != null}" th:errors="*{eventoId}"></span>
+            <label>Tipo de daño
+                <select th:field="*{tipoDanoId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="t : ${tiposDano}" th:value="${t.id}" th:text="${t.nombre + ' (' + t.sector + ')'}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{tipoDanoId}"></span>
+            </label>
+            <label>Ubicación
+                <select th:field="*{ubicacionId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="u : ${ubicaciones}" th:value="${u.id}" th:text="${u.codigo + ' - ' + u.nombre}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{ubicacionId}"></span>
+            </label>
+            <label>Fecha y hora del reporte
+                <input type="datetime-local" th:field="*{fechaHora}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{fechaHora}"></span>
+            </label>
+            <label>Cantidad afectada
+                <input type="number" min="0" step="1" th:field="*{cantidadAfectada}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{cantidadAfectada}"></span>
+            </label>
+            <label>Descripción
+                <textarea th:field="*{descripcion}" th:errorclass="campo-invalido" maxlength="1000" required></textarea>
+                <span class="mensaje-campo" th:errors="*{descripcion}"></span>
+            </label>
+            <label>Nivel de afectación (opcional)
+                <select th:field="*{afectacionNivelId}" th:errorclass="campo-invalido">
+                    <option value="">Sin nivel</option>
+                    <option th:each="n : ${niveles}" th:value="${n.id}" th:text="${n.nombre}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{afectacionNivelId}"></span>
+            </label>
+            <label th:if="${reporteId != null}">Estado
+                <select th:field="*{estado}" required>
+                    <option value="REGISTRADO">REGISTRADO</option>
+                    <option value="VERIFICADO">VERIFICADO</option>
+                    <option value="DESCARTADO">DESCARTADO</option>
+                </select>
+            </label>
+            <input type="hidden" th:if="${reporteId == null}" th:field="*{estado}">
+            <div class="acciones">
+                <button type="submit" th:text="${reporteId == null} ? 'Registrar reporte' : 'Guardar cambios'">Registrar reporte</button>
+                <a th:href="@{/reportes-dano}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

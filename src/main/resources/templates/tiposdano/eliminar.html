@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar tipo de daño | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Confirmar eliminación</h1>
+    </header>
+    <section class="tarjeta">
+        <p>¿Desea eliminar el tipo de daño <strong th:text="${tipoDano.nombre}"></strong> (<span th:text="${tipoDano.codigo}"></span>)?</p>
+        <p class="nota">El tipo de daño pasará a estado INACTIVO y no estará disponible para nuevos reportes de daño.</p>
+        <form method="post" th:action="@{/tipos-dano/{id}/eliminar(id=${tipoDano.id})}" class="acciones">
+            <button class="boton-peligro" type="submit">Confirmar eliminación</button>
+            <a th:href="@{/tipos-dano}">Cancelar</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>

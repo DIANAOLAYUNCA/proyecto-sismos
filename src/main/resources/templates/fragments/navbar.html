@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="navbar" th:fragment="navbar">
+    <div class="navbar-interior">
+        <a class="navbar-marca" th:href="@{/}">CSSP <span>Sismos</span></a>
+        <button class="navbar-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">&#9776;</button>
+        <ul class="navbar-enlaces" id="menu-principal">
+            <li><a th:href="@{/eventos}" data-ruta="/eventos">Sismos</a></li>
+            <li><a th:href="@{/reportes-dano}" data-ruta="/reportes-dano">Reportes de daño</a></li>
+            <li><a th:href="@{/estaciones}" data-ruta="/estaciones">Estaciones</a></li>
+            <li><a th:href="@{/ubicaciones}" data-ruta="/ubicaciones">Ubicaciones</a></li>
+            <li><a th:href="@{/afectacionniveles}" data-ruta="/afectacionniveles">Niveles</a></li>
+            <li><a th:href="@{/tipos-alerta}" data-ruta="/tipos-alerta">Tipos de alerta</a></li>
+            <li><a th:href="@{/tipos-dano}" data-ruta="/tipos-dano">Tipos de daño</a></li>
+            <li><a th:href="@{/importacion}" data-ruta="/importacion">Importar CSV</a></li>
+        </ul>
+    </div>
+</nav>
+</body>
+</html>

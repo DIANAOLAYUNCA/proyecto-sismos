@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niveles de afectación | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Lista de niveles de afectación</h1>
+    </header>
+    <nav class="acciones">
+        <a class="boton" th:href="@{/afectacionniveles/nuevo}">Nuevo nivel</a>
+    </nav>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+    <section class="tarjeta">
+        <h2>Niveles encontrados: <span th:text="${#lists.size(niveles)}">0</span></h2>
+        <div class="tabla-scroll">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Código</th><th>Nombre</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(niveles)}">
+                        <td colspan="4" class="vacio">No se encontraron niveles de afectación.</td>
+                    </tr>
+                    <tr th:each="nivel : ${niveles}">
+                        <td th:text="${nivel.id}"></td>
+                        <td th:text="${nivel.codigo}"></td>
+                        <td th:text="${nivel.nombre}"></td>
+                        <td class="acciones-tabla">
+                            <a th:href="@{/afectacionniveles/{id}(id=${nivel.id})}">Ver</a>
+                            <a th:href="@{/afectacionniveles/{id}/editar(id=${nivel.id})}">Editar</a>
+                            <a class="enlace-peligro" th:href="@{/afectacionniveles/{id}/eliminar(id=${nivel.id})}">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

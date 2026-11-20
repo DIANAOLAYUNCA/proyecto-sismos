@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de nivel de afectación | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Detalle del nivel de afectación</h1>
+    </header>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <section class="tarjeta detalle">
+        <dl>
+            <div><dt>ID</dt><dd th:text="${nivel.id}"></dd></div>
+            <div><dt>Código</dt><dd th:text="${nivel.codigo}"></dd></div>
+            <div><dt>Nombre</dt><dd th:text="${nivel.nombre}"></dd></div>
+            <div><dt>Fecha de creación</dt><dd th:text="${nivel.creacionFecha}"></dd></div>
+            <div><dt>Usuario de creación</dt><dd th:text="${nivel.creacionUsuario}"></dd></div>
+            <div><dt>Fecha de actualización</dt><dd th:text="${nivel.actualizacionFecha}"></dd></div>
+            <div><dt>Usuario de actualización</dt><dd th:text="${nivel.actualizacionUsuario}"></dd></div>
+        </dl>
+    </section>
+    <nav class="acciones">
+        <a class="boton" th:href="@{/afectacionniveles/{id}/editar(id=${nivel.id})}">Editar</a>
+        <a class="enlace-peligro" th:href="@{/afectacionniveles/{id}/eliminar(id=${nivel.id})}">Eliminar</a>
+        <a th:href="@{/afectacionniveles}">Volver a la lista</a>
+    </nav>
+</main>
+</body>
+</html>

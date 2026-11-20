@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del sismo | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Detalle del sismo</h1>
+    </header>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <section class="tarjeta detalle">
+        <dl>
+            <div><dt>ID</dt><dd th:text="${evento.id}"></dd></div>
+            <div><dt>Estación</dt><dd th:text="${evento.estacion.codigo + ' - ' + evento.estacion.nombre}"></dd></div>
+            <div><dt>Código</dt><dd th:text="${evento.codigo}"></dd></div>
+            <div><dt>Fecha y hora</dt><dd th:text="${evento.fechaHora}"></dd></div>
+            <div><dt>Magnitud</dt><dd th:text="${evento.magnitud}"></dd></div>
+            <div><dt>Profundidad</dt><dd th:text="${evento.profundidad + ' km'}"></dd></div>
+            <div><dt>Latitud</dt><dd th:text="${evento.latitud}"></dd></div>
+            <div><dt>Longitud</dt><dd th:text="${evento.longitud}"></dd></div>
+            <div><dt>Referencia</dt><dd th:text="${evento.referencia}"></dd></div>
+            <div><dt>Ubicación</dt><dd th:text="${evento.ubicacion.codigo + ' - ' + evento.ubicacion.nombre}"></dd></div>
+            <div><dt>Tipo de alerta</dt><dd th:text="${evento.tipoAlerta.nombre + ' (' + evento.tipoAlerta.color + ')'}"></dd></div>
+            <div><dt>Nivel de afectación</dt><dd th:text="${evento.afectacionNivel != null ? evento.afectacionNivel.nombre : ''}"></dd></div>
+            <div><dt>Estado</dt><dd th:text="${evento.estado}"></dd></div>
+            <div><dt>Fecha de creación</dt><dd th:text="${evento.creacionFecha}"></dd></div>
+            <div><dt>Usuario de creación</dt><dd th:text="${evento.creacionUsuario}"></dd></div>
+            <div><dt>Fecha de actualización</dt><dd th:text="${evento.actualizacionFecha}"></dd></div>
+            <div><dt>Usuario de actualización</dt><dd th:text="${evento.actualizacionUsuario}"></dd></div>
+        </dl>
+    </section>
+    <nav class="acciones">
+        <a class="boton" th:href="@{/eventos/{id}/editar(id=${evento.id})}">Editar</a>
+        <a class="enlace-peligro" th:if="${evento.estado != 'INACTIVO'}" th:href="@{/eventos/{id}/eliminar(id=${evento.id})}">Eliminar</a>
+        <a th:if="${evento.estado != 'INACTIVO'}" th:href="@{/reportes-dano/nuevo(eventoId=${evento.id})}">Registrar reporte de daño</a>
+        <a th:href="@{/reportes-dano(eventoId=${evento.id})}">Ver reportes de daño</a>
+        <a th:href="@{/eventos}">Volver a la lista</a>
+    </nav>
+</main>
+</body>
+</html>

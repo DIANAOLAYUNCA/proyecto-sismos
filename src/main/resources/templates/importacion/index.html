@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importar catálogos | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Importar catálogos desde CSV</h1>
+    </header>
+    <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+
+    <section class="tarjeta">
+        <h2>Archivos incluidos del curso</h2>
+        <p class="nota">Carga <strong>ubigeo.csv</strong> (25), <strong>tipo_alerta.csv</strong> (4) y <strong>tipo_dano.csv</strong> (7) con un solo clic. Los códigos que ya existen se omiten, por lo que puede repetirse sin duplicar datos.</p>
+        <form method="post" th:action="@{/importacion/incluidos}" class="acciones">
+            <button type="submit">Importar archivos incluidos</button>
+        </form>
+    </section>
+
+    <section class="tarjeta" th:each="c : ${catalogos}">
+        <h2 th:text="${c.titulo}">Catálogo</h2>
+        <p class="nota">Columnas esperadas: <span th:text="${#strings.listJoin(c.columnas, ', ')}"></span>. Archivo en UTF-8 separado por comas.</p>
+        <form method="post" enctype="multipart/form-data" th:action="@{/importacion/{ruta}(ruta=${c.ruta})}"
+              class="formulario formulario-columna">
+            <label>Archivo CSV
+                <input type="file" name="archivo" accept=".csv,text/csv" required>
+            </label>
+            <div class="acciones">
+                <button type="submit" th:text="${'Importar ' + c.archivo}">Importar</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="tarjeta" th:each="r : ${resultados}">
+        <h2 th:text="${'Resultado: ' + r.catalogo.titulo + ' (' + r.archivo + ')'}">Resultado</h2>
+        <p>
+            Filas leídas: <strong th:text="${r.total}">0</strong> ·
+            Importadas: <strong th:text="${r.importadas}">0</strong> ·
+            Omitidas: <strong th:text="${r.omitidas}">0</strong> ·
+            Rechazadas: <strong th:text="${r.rechazadas}">0</strong>
+        </p>
+        <div class="tabla-scroll">
+            <table>
+                <thead>
+                    <tr><th>Línea</th><th>Código</th><th>Resultado</th><th>Detalle</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(r.lineas)}">
+                        <td colspan="4" class="vacio">El archivo no tiene filas de datos.</td>
+                    </tr>
+                    <tr th:each="l : ${r.lineas}">
+                        <td th:text="${l.numero}"></td>
+                        <td th:text="${l.codigo}"></td>
+                        <td th:text="${l.estado}"></td>
+                        <td th:text="${l.mensaje}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

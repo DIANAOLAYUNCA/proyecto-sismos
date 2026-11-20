@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sismo | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1 th:text="${eventoId == null} ? 'Nuevo sismo' : 'Editar sismo'">Nuevo sismo</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+        <form method="post" th:object="${eventoForm}"
+              th:action="${eventoId == null} ? @{/eventos} : @{/eventos/{id}/editar(id=${eventoId})}"
+              class="formulario formulario-columna">
+            <input type="hidden" th:if="${eventoId != null}" th:field="*{id}">
+            <label>Estación
+                <select th:field="*{estacionId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="e : ${estaciones}" th:value="${e.id}" th:text="${e.codigo + ' - ' + e.nombre}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{estacionId}"></span>
+            </label>
+            <label>Código
+                <input th:field="*{codigo}" th:errorclass="campo-invalido" maxlength="30" required>
+                <span class="mensaje-campo" th:errors="*{codigo}"></span>
+            </label>
+            <label>Fecha y hora
+                <input type="datetime-local" th:field="*{fechaHora}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{fechaHora}"></span>
+            </label>
+            <label>Magnitud
+                <input type="number" step="0.01" th:field="*{magnitud}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{magnitud}"></span>
+            </label>
+            <label>Profundidad
+                <input type="number" step="0.01" th:field="*{profundidad}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{profundidad}"></span>
+            </label>
+            <label>Latitud
+                <input type="number" step="0.000001" th:field="*{latitud}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{latitud}"></span>
+            </label>
+            <label>Longitud
+                <input type="number" step="0.000001" th:field="*{longitud}" th:errorclass="campo-invalido" required>
+                <span class="mensaje-campo" th:errors="*{longitud}"></span>
+            </label>
+            <label>Referencia
+                <input th:field="*{referencia}" th:errorclass="campo-invalido" maxlength="255" required>
+                <span class="mensaje-campo" th:errors="*{referencia}"></span>
+            </label>
+            <label>Ubicación
+                <select th:field="*{ubicacionId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="u : ${ubicaciones}" th:value="${u.id}" th:text="${u.codigo + ' - ' + u.nombre}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{ubicacionId}"></span>
+            </label>
+            <label>Tipo de alerta
+                <select th:field="*{tipoAlertaId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="a : ${alertas}" th:value="${a.id}" th:text="${a.nombre + ' (' + a.color + ')'}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{tipoAlertaId}"></span>
+            </label>
+            <label>Nivel de afectación
+                <select th:field="*{afectacionNivelId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="n : ${niveles}" th:value="${n.id}" th:text="${n.nombre}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{afectacionNivelId}"></span>
+            </label>
+            <label>Estado
+                <select th:field="*{estado}" required>
+                    <option value="REGISTRADO">Registrado</option>
+                    <option value="EN_EVALUACION">En evaluación</option>
+                    <option value="EN_SEGUIMIENTO">En seguimiento</option>
+                    <option value="CERRADO">Cerrado</option>                    
+                    <option value="INACTIVO">Inactivo</option>
+                </select>
+            </label>
+            <div class="acciones">
+                <button type="submit" th:text="${eventoId == null} ? 'Registrar sismo' : 'Guardar cambios'">Registrar sismo</button>
+                <a th:href="@{/eventos}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

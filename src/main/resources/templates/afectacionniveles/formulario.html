@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivel de afectación | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1 th:text="${nivelId == null} ? 'Nuevo nivel de afectación' : 'Editar nivel de afectación'">Nuevo nivel de afectación</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+        <form method="post" th:object="${afectacionNivelForm}"
+              th:action="${nivelId == null} ? @{/afectacionniveles} : @{/afectacionniveles/{id}/editar(id=${nivelId})}"
+              class="formulario formulario-columna">
+            <input type="hidden" th:if="${nivelId != null}" th:field="*{id}">
+            <label>Código
+                <input th:field="*{codigo}" th:errorclass="campo-invalido" maxlength="20" required>
+                <span class="mensaje-campo" th:errors="*{codigo}"></span>
+            </label>
+            <label>Nombre
+                <input th:field="*{nombre}" th:errorclass="campo-invalido" maxlength="100" required>
+                <span class="mensaje-campo" th:errors="*{nombre}"></span>
+            </label>
+            <div class="acciones">
+                <button type="submit" th:text="${nivelId == null} ? 'Registrar nivel' : 'Guardar cambios'">Registrar nivel</button>
+                <a th:href="@{/afectacionniveles}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

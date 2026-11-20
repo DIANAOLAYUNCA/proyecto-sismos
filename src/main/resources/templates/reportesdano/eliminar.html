@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descartar reporte de daño | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Confirmar eliminación</h1>
+    </header>
+    <section class="tarjeta">
+        <p>¿Desea eliminar el reporte de daño <strong th:text="${'#' + reporte.id}"></strong> del sismo <strong th:text="${reporte.evento.codigo}"></strong>?</p>
+        <div class="detalle">
+            <dl>
+                <div><dt>Tipo de daño</dt><dd th:text="${reporte.tipoDano.nombre}"></dd></div>
+                <div><dt>Cantidad afectada</dt><dd th:text="${reporte.cantidadAfectada}"></dd></div>
+                <div><dt>Estado actual</dt><dd th:text="${reporte.estado}"></dd></div>
+            </dl>
+        </div>
+        <p class="nota">El reporte pasará a estado DESCARTADO y dejará de contarse en el total de afectados. El sismo asociado no cambia.</p>
+        <form method="post" th:action="@{/reportes-dano/{id}/eliminar(id=${reporte.id})}" class="acciones">
+            <button class="boton-peligro" type="submit">Confirmar eliminación</button>
+            <a th:href="@{/reportes-dano(eventoId=${reporte.evento.id})}">Cancelar</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>

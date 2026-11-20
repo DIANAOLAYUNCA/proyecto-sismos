@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar nivel de afectación | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Confirmar eliminación</h1>
+    </header>
+    <section class="tarjeta">
+        <p>¿Desea eliminar el nivel de afectación <strong th:text="${nivel.nombre}"></strong> (<span th:text="${nivel.codigo}"></span>)?</p>
+        <p class="nota">Esta acción no se puede deshacer. Solo se elimina si ningún sismo ni reporte de daño usa este nivel.</p>
+        <form method="post" th:action="@{/afectacionniveles/{id}/eliminar(id=${nivel.id})}" class="acciones">
+            <button class="boton-peligro" type="submit">Confirmar eliminación</button>
+            <a th:href="@{/afectacionniveles}">Cancelar</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>
