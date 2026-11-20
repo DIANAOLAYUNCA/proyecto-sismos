@@ -66,6 +66,21 @@
                 font-size: 0.95rem;
                 color: var(--text-secondary);
             }
+            
+            .section-heading {
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--text-muted);
+                margin-top: 8px;
+                margin-bottom: -4px;
+                padding-left: 4px;
+            }
+
+            .section-heading.spaced {
+                margin-top: 20px;
+            }
 
             .module-list {
                 display: flex;
@@ -161,54 +176,80 @@
             </header>
 
             <main class="module-list">
+                <!-- SECCIÓN 1: OPERACIONES -->
+                <div class="section-heading">Gestión Sísmica y Operaciones</div>
+                
                 <!-- Link 1: Eventos -->
-                <a href="eventos" class="module-item">                
-                    <span class="module-title">Sismos</span>
+                <a href="eventos" class="module-item">
+                    <div class="module-header">
+                        <span class="module-title">Eventos de Sismos</span>
+                    </div>
                     <p class="module-desc">Búsqueda y verificación de información de eventos registrados filtrados por magnitud y fecha</p>
                 </a>
 
-                <!-- Link 2: Estaciones -->
+                <!-- Link 2: Reportes de daño -->
+                <a href="reportes-dano" class="module-item">
+                    <div class="module-header">
+                        <span class="module-title">Reportes de daño</span>
+                    </div>
+                    <p class="module-desc">Registro y consulta de los daños asociados a cada sismo, con su cantidad de afectados</p>
+                </a>
+                
+                <!-- Link 3: Estaciones -->
                 <a href="estaciones" class="module-item">
-                    <span class="module-title">Estaciones</span>
+                    <div class="module-header">
+                        <span class="module-title">Estaciones</span>
+                    </div>
                     <p class="module-desc">Administración y estado operativo de los sensores sísmicos en la red nacional</p>
                 </a>
-
-                <!-- Link 3: Ubicaciones -->
+                
+                <!-- SECCIÓN 2: TABLAS MAESTRAS -->
+                <div class="section-heading spaced">Tablas Maestras (Catálogos)</div>
+                
+                <!-- Link 4: Ubicaciones -->
                 <a href="ubicaciones" class="module-item">
-                    <span class="module-title">Ubicaciones</span>
-                    <p class="module-desc">Registro de departamentos, provincias y zonas geográficas epicentrales</p>
+                    <div class="module-header">
+                        <span class="module-title">Ubicaciones</span>
+                        <span class="module-tag">Catálogo</span>
+                    </div>
+                    <p class="module-desc">Consulta de departamentos, provincias y zonas geográficas epicentrales</p>
                 </a>
-
-                <!-- Link 4: Niveles de Afectación -->
+                
+                <!-- Link 5: Niveles de Afectación -->
                 <a href="afectacionniveles" class="module-item">
-                    <span class="module-title">Niveles de Afectación</span>
+                    <div class="module-header">
+                        <span class="module-title">Niveles de Afectación</span>
+                        <span class="module-tag">Catálogo</span>
+                    </div>
                     <p class="module-desc">Indicadores de impacto, intensidad percibida y categorías de daños</p>
                 </a>
-
-                <!-- Link 5: Tipos de alerta -->
+                
+                <!-- Link 6: Tipos de alerta -->
                 <a href="tipos-alerta" class="module-item">
-                    <span class="module-title">Tipos de alerta</span>
+                    <div class="module-header">
+                        <span class="module-title">Tipos de alerta</span>
+                        <span class="module-tag">Catálogo</span>
+                    </div>
                     <p class="module-desc">Clasificación de alertas con color y prioridad para los sismos registrados</p>
                 </a>
                 
-                <!-- Link 6: Tipos de dano -->
+                <!-- Link 7: Tipos de dano -->
                 <a href="tipos-dano" class="module-item">
-                    <span class="module-title">Tipos de daño</span>
-                    <p class="module-desc">Catálogo de sectores y tipos de daño para los reportes</p>
+                    <div class="module-header">
+                        <span class="module-title">Tipos de daño</span>
+                        <span class="module-tag">Catálogo</span>
+                    </div>
+                    <p class="module-desc">Catálogo precargado de sectores y tipos de daño para los reportes</p>
                 </a>
-
-                <!-- Link 7: Reportes de daño -->
-                <a href="reportes-dano" class="module-item">
-                    <span class="module-title">Reportes de daño</span>
-                    <p class="module-desc">Registro y consulta de los daños asociados a cada sismo, con su cantidad de afectados</p>
-                </a>
-
+                
                 <!-- Link 8: Importación de catálogos -->
                 <a href="importacion" class="module-item">
-                    <span class="module-title">Importar catálogos (CSV)</span>
+                    <div class="module-header">
+                        <span class="module-title">Importar catálogos (CSV)</span>
+                        <span class="module-tag">Carga masiva</span>
+                    </div>
                     <p class="module-desc">Carga de ubigeo, tipos de alerta y tipos de daño desde archivos CSV</p>
                 </a>
-
             </main>
 
             <footer>
