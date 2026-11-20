@@ -14,9 +14,17 @@
         <span class="version">Sistema de sismos</span>
         <h1>Reportes de daño</h1>
     </header>
+    
     <nav class="acciones">
-        <a class="boton" th:href="${eventoId != null} ? @{/reportes-dano/nuevo(eventoId=${eventoId})} : @{/reportes-dano/nuevo}">Nuevo reporte de daño</a>
+        <a class="boton" th:href="${eventoId != null} ? @{/reportes-dano/nuevo(eventoId=${eventoId})} : @{/reportes-dano/nuevo}" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Nuevo reporte de daño</span>
+        </a>
     </nav>
+    
     <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
     <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
     <section class="tarjeta">
@@ -51,13 +59,40 @@
                         <td th:text="${r.fechaHora}"></td>
                         <td th:text="${r.tipoDano.nombre}"></td>
                         <td th:text="${r.cantidadAfectada}"></td>
-                        <td th:text="${r.estado}"></td>
+                        <td th:text="${r.estado}"></td>                        
                         <td class="acciones-tabla">
-                            <a th:href="@{/reportes-dano/{id}(id=${r.id})}">Ver</a>
-                            <a th:if="${r.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/editar(id=${r.id})}">Editar</a>
-                            <a class="enlace-peligro" th:if="${r.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/eliminar(id=${r.id})}">Eliminar</a>
+                            <a class="accion-ver" th:href="@{/reportes-dano/{id}(id=${r.id})}" title="Ver detalle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <span>Ver</span>
+                            </a>
+                            
+                            <a class="accion-editar" th:if="${r.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/editar(id=${r.id})}" title="Editar registro">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                                <span>Editar</span>
+                            </a>
+                            
+                            <a class="enlace-peligro" th:if="${r.estado != 'DESCARTADO'}" th:href="@{/reportes-dano/{id}/eliminar(id=${r.id})}" title="Eliminar registro">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                                <span>Eliminar</span>
+                            </a>
+                            
                             <form class="form-en-linea" method="post" th:if="${r.estado == 'DESCARTADO'}" th:action="@{/reportes-dano/{id}/reactivar(id=${r.id})}">
-                                <button type="submit" class="boton-tabla">Reactivar</button>
+                                <button type="submit" class="boton-tabla accion-reactivar" title="Reactivar registro">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <polyline points="1 4 1 10 7 10"/>
+                                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                                    </svg>
+                                    <span>Reactivar</span>
+                                </button>
                             </form>
                         </td>
                     </tr>

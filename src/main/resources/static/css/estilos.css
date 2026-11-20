@@ -43,8 +43,8 @@ body {
 }
 
 .contenedor {
-    width: 92%;
-    max-width: 1140px;
+    width: 95%;
+    max-width: 1440px;
     margin: 28px auto 64px;
 }
 
@@ -59,8 +59,8 @@ body {
 }
 
 .navbar-interior {
-    width: 96%;
-    max-width: 1240px;
+    width: 95%;
+    max-width: 1440px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -390,7 +390,87 @@ tbody tr:hover td {
     gap: 6px;
 }
 
-.acciones-tabla a {
+.acciones-tabla a,
+.acciones-tabla button.boton-tabla {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border: 1px solid var(--color-borde);
+    border-radius: 7px;
+    background: var(--color-superficie);
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.2;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.05s;
+}
+
+.acciones-tabla a:hover,
+.acciones-tabla button.boton-tabla:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+/* Ver (Azul informativo) */
+.acciones-tabla a.accion-ver {
+    color: #1d4ed8;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.acciones-tabla a.accion-ver:hover {
+    background: #dbeafe;
+    border-color: #93c5fd;
+    color: #1e40af;
+}
+
+/* Editar (Ámbar / Naranja suave) */
+.acciones-tabla a.accion-editar {
+    color: #b45309;
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.acciones-tabla a.accion-editar:hover {
+    background: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+/* Eliminar (Rojo peligro usando tus variables) */
+.acciones-tabla a.enlace-peligro {
+    color: var(--color-peligro);
+    background: var(--color-peligro-fondo);
+    border-color: var(--color-peligro-borde);
+}
+
+.acciones-tabla a.enlace-peligro:hover {
+    background: #fadbd8;
+    border-color: #e69d97;
+    color: var(--color-peligro-hover);
+}
+
+/* Reactivar (Verde éxito usando tus variables) */
+.acciones-tabla button.boton-tabla.accion-reactivar {
+    color: var(--color-exito-texto);
+    background: var(--color-exito-fondo);
+    border-color: var(--color-exito-borde);
+    cursor: pointer;
+}
+
+.acciones-tabla button.boton-tabla.accion-reactivar:hover {
+    background: #d5f0de;
+    border-color: #9bd6b0;
+    color: #15532d;
+}
+
+
+
+
+
+
+
+/*.acciones-tabla a {
     padding: 4px 11px;
     border: 1px solid var(--color-borde);
     border-radius: 7px;
@@ -398,13 +478,13 @@ tbody tr:hover td {
     font-size: 0.84rem;
     font-weight: 600;
     transition: background 0.15s, border-color 0.15s;
-}
+}*/
 
-.acciones-tabla a:hover {
+/*.acciones-tabla a:hover {
     background: var(--color-acento-suave);
     border-color: #c2cbe0;
     text-decoration: none;
-}
+}*/
 
 .form-en-linea {
     display: inline;
@@ -412,12 +492,14 @@ tbody tr:hover td {
 }
 
 .acciones-tabla button.boton-tabla {
-    padding: 4px 11px;
+/*    padding: 4px 11px;
     border: 1px solid var(--color-borde);
     border-radius: 7px;
     background: var(--color-superficie);
     color: var(--color-acento);
     font-size: 0.84rem;
+    box-shadow: none;*/
+    color: var(--color-acento);
     box-shadow: none;
 }
 
@@ -613,6 +695,19 @@ a.enlace-peligro {
     font-weight: 600;
     color: var(--color-texto-suave);
 }
+
+
+/* ---------- Tags ---------- */
+.module-tag {
+                font-size: 0.7rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                padding: 0.4rem 0.5rem;
+                border-radius: 4px;
+                background-color: rgba(0, 0, 0, 0.05);
+                color: var(--text-muted);
+            }
 
 /* ---------- Adaptable a pantallas pequeñas ---------- */
 
