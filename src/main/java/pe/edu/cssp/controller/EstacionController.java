@@ -59,7 +59,7 @@ public class EstacionController {
         f.setUbicacionId(e.getUbicacion().getId());
         f.setLatitud(e.getLatitud());
         f.setLongitud(e.getLongitud());
-        f.setInstalacionFecha(e.getInstalacionFecha());
+        f.setInstalacionFecha(e.getInstalacionFecha() != null ? e.getInstalacionFecha().toString() : null);
         f.setEstado(e.getEstado());
         cargarFormulario(model, f, id);
         return "estaciones/formulario";

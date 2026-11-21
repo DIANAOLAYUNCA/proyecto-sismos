@@ -13,12 +13,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Usuario")
 public class Usuario {
 
-    /* Definición de estructura */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -46,29 +46,26 @@ public class Usuario {
     private String estado;
 
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
 
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
 
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
 
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
 
-//  Otras relaciones
     @OneToMany(mappedBy = "responsable", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seguimiento> seguimientos = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImportacionHistorico> importaciones = new ArrayList<>();
 
-    /* Clase publica para los servlets */
     public Usuario() {
     }
 
-    /* Constructor */
     public Usuario(int id, String nombres, String apellidos, String usuario, String email, String passwordHash, String estado, Rol rol) {
         this.id = id;
         this.nombres = nombres;
@@ -80,7 +77,6 @@ public class Usuario {
         this.rol = rol;
     }
 
-    /* Definición de Getters y Setters */
     public int getId() {
         return id;
     }
@@ -145,11 +141,11 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -161,11 +157,11 @@ public class Usuario {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 
@@ -192,5 +188,4 @@ public class Usuario {
     public void setImportaciones(List<ImportacionHistorico> importaciones) {
         this.importaciones = importaciones;
     }
-
 }

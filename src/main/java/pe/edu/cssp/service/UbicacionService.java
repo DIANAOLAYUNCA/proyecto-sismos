@@ -10,6 +10,7 @@ import pe.edu.cssp.repository.UbicacionRepository;
 import pe.edu.cssp.web.error.RecursoNoEncontradoException;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.UbicacionForm;
+import java.time.LocalDateTime;
 
 @Service
 public class UbicacionService {
@@ -38,7 +39,7 @@ public class UbicacionService {
             throw new ReglaNegocioException("El código de la ubicación ya está registrado.");
         }
         Ubicacion ubicacion = new Ubicacion();
-        ubicacion.setCreacionFecha(fecha());
+        ubicacion.setCreacionFecha(LocalDateTime.now());
         ubicacion.setCreacionUsuario("sistema");
         completar(ubicacion, form, codigo);
         return ubicacionRepository.save(ubicacion);
@@ -53,7 +54,7 @@ public class UbicacionService {
                 throw new ReglaNegocioException("El código ya pertenece a otra ubicación.");
             }
         });
-        ubicacion.setActualizacionFecha(fecha());
+        ubicacion.setActualizacionFecha(LocalDateTime.now());
         ubicacion.setActualizacionUsuario("sistema");
         completar(ubicacion, form, codigo);
         return ubicacionRepository.save(ubicacion);
@@ -66,7 +67,7 @@ public class UbicacionService {
             throw new ReglaNegocioException("La ubicación ya fue eliminada.");
         }
         ubicacion.setEstado("INACTIVO");
-        ubicacion.setActualizacionFecha(fecha());
+        ubicacion.setActualizacionFecha(LocalDateTime.now());
         ubicacion.setActualizacionUsuario("sistema");
         ubicacionRepository.save(ubicacion);
     }

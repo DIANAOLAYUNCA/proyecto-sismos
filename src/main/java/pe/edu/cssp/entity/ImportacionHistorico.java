@@ -9,11 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Importacion_Historico")
 public class ImportacionHistorico {
-    /* Definición de estructura */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -26,10 +26,10 @@ public class ImportacionHistorico {
     private String nombreArchivo;
     
     @Column(name = "fecha_inicio", nullable = false)
-    private String fechaInicio;
+    private LocalDateTime fechaInicio;
 
     @Column(name = "fecha_fin")
-    private String fechaFin;
+    private LocalDateTime fechaFin;
     
     @Column(name = "total_registros")
     private Integer totalRegistros;
@@ -47,24 +47,24 @@ public class ImportacionHistorico {
     private String detalleErrores;
     
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
     
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
     
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
     
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
     
-    
-    /* Clase publica para los servlets */
     public ImportacionHistorico() {}
     
-    
-    /* Constructor */
-    public ImportacionHistorico(int id, String nombreArchivo, String fechaInicio, String fechaFin, Integer totalRegistros, Integer registrosProcesados, Integer registrosError, String estado, String detalleErrores, Usuario usuario, String creacionFecha, String creacionUsuario, String actualizacionFecha, String actualizacionUsuario) {
+    public ImportacionHistorico(int id, String nombreArchivo, LocalDateTime fechaInicio, LocalDateTime fechaFin,
+                                Integer totalRegistros, Integer registrosProcesados, Integer registrosError,
+                                String estado, String detalleErrores, Usuario usuario,
+                                LocalDateTime creacionFecha, String creacionUsuario,
+                                LocalDateTime actualizacionFecha, String actualizacionUsuario) {
         this.id = id;
         this.nombreArchivo = nombreArchivo;
         this.fechaInicio = fechaInicio;
@@ -80,9 +80,6 @@ public class ImportacionHistorico {
         this.actualizacionFecha = actualizacionFecha;
         this.actualizacionUsuario = actualizacionUsuario;
     }
-    
-    
-    /* Definición de Getters y Setters */
 
     public int getId() {
         return id;
@@ -100,19 +97,19 @@ public class ImportacionHistorico {
         this.nombreArchivo = nombreArchivo;
     }
 
-    public String getFechaInicio() {
+    public LocalDateTime getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(String fechaInicio) {
+    public void setFechaInicio(LocalDateTime fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public String getFechaFin() {
+    public LocalDateTime getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(String fechaFin) {
+    public void setFechaFin(LocalDateTime fechaFin) {
         this.fechaFin = fechaFin;
     }
 
@@ -164,11 +161,11 @@ public class ImportacionHistorico {
         this.usuario = usuario;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -180,11 +177,11 @@ public class ImportacionHistorico {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 
@@ -195,5 +192,4 @@ public class ImportacionHistorico {
     public void setActualizacionUsuario(String actualizacionUsuario) {
         this.actualizacionUsuario = actualizacionUsuario;
     }
-    
 }

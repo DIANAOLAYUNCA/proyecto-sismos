@@ -2,6 +2,7 @@ package pe.edu.cssp.controller;
 
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -68,7 +69,7 @@ public class EventoController {
         f.setId(id);
         f.setEstacionId(e.getEstacion().getId());
         f.setCodigo(e.getCodigo());
-        f.setFechaHora(e.getFechaHora().replace(' ', 'T').substring(0, 16));
+        f.setFechaHora(e.getFechaHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         f.setMagnitud(BigDecimal.valueOf(e.getMagnitud()));
         f.setProfundidad(BigDecimal.valueOf(e.getProfundidad()));
         f.setLatitud(BigDecimal.valueOf(e.getLatitud()));

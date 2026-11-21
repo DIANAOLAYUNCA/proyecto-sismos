@@ -10,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Departamento")
@@ -26,28 +27,23 @@ public class Departamento {
     private String codigo;
     
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
     
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
     
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
     
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
     
-//  Otras relaciones
     @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Provincia> provincias = new ArrayList<>();
     
-    
-    /* Clase publica para los servlets */
     public Departamento() {}
     
-    
-    /* Constructor */
-    public Departamento(int id, String nombre, String codigo, String creacionFecha, String creacionUsuario, String actualizacionFecha, String actualizacionUsuario) {
+    public Departamento(int id, String nombre, String codigo, LocalDateTime creacionFecha, String creacionUsuario, LocalDateTime actualizacionFecha, String actualizacionUsuario) {
         this.id = id;
         this.nombre = nombre;
         this.codigo = codigo;
@@ -56,7 +52,6 @@ public class Departamento {
         this.actualizacionFecha = actualizacionFecha;
         this.actualizacionUsuario = actualizacionUsuario;
     }
-    
     
     /* Definición de Getters y Setters */
     public int getId() {
@@ -83,11 +78,11 @@ public class Departamento {
         this.codigo = codigo;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -99,11 +94,11 @@ public class Departamento {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 
@@ -122,5 +117,4 @@ public class Departamento {
     public void setProvincias(List<Provincia> provincias) {
         this.provincias = provincias;
     }
-
 }

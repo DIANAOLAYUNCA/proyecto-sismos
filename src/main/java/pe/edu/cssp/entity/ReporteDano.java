@@ -1,6 +1,7 @@
 package pe.edu.cssp.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Reporte_Dano")
@@ -16,7 +17,7 @@ public class ReporteDano {
     @JoinColumn(name = "ubicacion_id", nullable = false)
     private Ubicacion ubicacion;
     @Column(name = "fecha_hora", nullable = false)
-    private String fechaHora;
+    private LocalDateTime fechaHora;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "afectacion_nivel_id")
     private AfectacionNivel afectacionNivel;
@@ -30,11 +31,11 @@ public class ReporteDano {
     @Column(name = "estado", nullable = false, length = 20)
     private String estado;
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
 
@@ -62,11 +63,11 @@ public class ReporteDano {
         this.ubicacion = ubicacion;
     }
 
-    public String getFechaHora() {
+    public LocalDateTime getFechaHora() {
         return fechaHora;
     }
 
-    public void setFechaHora(String fechaHora) {
+    public void setFechaHora(LocalDateTime fechaHora) {
         this.fechaHora = fechaHora;
     }
 
@@ -110,11 +111,11 @@ public class ReporteDano {
         this.estado = estado;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -126,11 +127,11 @@ public class ReporteDano {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 

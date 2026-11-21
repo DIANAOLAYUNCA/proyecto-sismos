@@ -9,6 +9,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Afectacion_Nivel")
@@ -24,32 +25,28 @@ public class AfectacionNivel {
     private String codigo;
     
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
     
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
     
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
     
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
     
-//  Otras relaciones
     @OneToMany(mappedBy = "afectacionNivel")
     private List<Evento> eventos = new ArrayList<>();
     
     @OneToMany(mappedBy = "afectacionNivel")
     private List<ReporteDano> reportes = new ArrayList<>();
-    
 
     public AfectacionNivel() {}
     
-    /* Constructor */
     public AfectacionNivel(int id, String nombre, String codigo,
-                            String creacionFecha, String creacionUsuario,
-                            String actualizacionFecha, String actualizacionUsuario) {
-
+                           LocalDateTime creacionFecha, String creacionUsuario,
+                           LocalDateTime actualizacionFecha, String actualizacionUsuario) {
         this.id = id;
         this.nombre = nombre;
         this.codigo = codigo;
@@ -83,11 +80,11 @@ public class AfectacionNivel {
         this.codigo = codigo;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -99,11 +96,11 @@ public class AfectacionNivel {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 
@@ -130,6 +127,4 @@ public class AfectacionNivel {
     public void setReportes(List<ReporteDano> reportes) {
         this.reportes = reportes;
     }
-    
 }
-

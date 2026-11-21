@@ -12,6 +12,7 @@ import pe.edu.cssp.entity.ReporteDano;
 import pe.edu.cssp.service.ReporteDanoService;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.ReporteDanoForm;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/reportes-dano")
@@ -69,7 +70,7 @@ public class ReporteDanoController {
         f.setEventoId(r.getEvento().getId());
         f.setTipoDanoId(r.getTipoDano().getId());
         f.setUbicacionId(r.getUbicacion().getId());
-        f.setFechaHora(r.getFechaHora().substring(0, 16).replace(' ', 'T'));
+        f.setFechaHora(r.getFechaHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         f.setCantidadAfectada(r.getCantidadAfectada());
         f.setDescripcion(r.getDescripcion());
         f.setAfectacionNivelId(r.getAfectacionNivel() == null ? null : r.getAfectacionNivel().getId());

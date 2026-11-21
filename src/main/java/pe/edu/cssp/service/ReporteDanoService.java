@@ -86,7 +86,7 @@ public class ReporteDanoService {
                 .filter(e -> !"INACTIVO".equals(e.getEstado()))
                 .orElseThrow(() -> new ReglaNegocioException("El reporte solo puede crearse para un sismo existente y vigente."));
         ReporteDano reporte = new ReporteDano();
-        reporte.setCreacionFecha(UbicacionService.fecha());
+        reporte.setCreacionFecha(LocalDateTime.now());
         reporte.setCreacionUsuario("sistema");
         reporte.setEvento(evento);
         reporte.setEstado("REGISTRADO");
@@ -100,7 +100,7 @@ public class ReporteDanoService {
         if ("DESCARTADO".equals(reporte.getEstado())) {
             throw new ReglaNegocioException("Un reporte descartado no puede modificarse.");
         }
-        reporte.setActualizacionFecha(UbicacionService.fecha());
+        reporte.setActualizacionFecha(LocalDateTime.now());
         reporte.setActualizacionUsuario("sistema");
         reporte.setEstado(form.getEstado());
         completar(reporte, form);
@@ -114,7 +114,7 @@ public class ReporteDanoService {
             throw new ReglaNegocioException("El reporte de daño ya fue descartado.");
         }
         reporte.setEstado("DESCARTADO");
-        reporte.setActualizacionFecha(UbicacionService.fecha());
+        reporte.setActualizacionFecha(LocalDateTime.now());
         reporte.setActualizacionUsuario("sistema");
         reporteDanoRepository.save(reporte);
     }
@@ -135,7 +135,7 @@ public class ReporteDanoService {
             throw new ReglaNegocioException("No se puede reactivar el reporte porque su ubicación está inactiva.");
         }
         reporte.setEstado("REGISTRADO");
-        reporte.setActualizacionFecha(UbicacionService.fecha());
+        reporte.setActualizacionFecha(LocalDateTime.now());
         reporte.setActualizacionUsuario("sistema");
         return reporteDanoRepository.save(reporte);
     }
@@ -152,7 +152,7 @@ public class ReporteDanoService {
             nivel = afectacionNivelRepository.findById(form.getAfectacionNivelId())
                     .orElseThrow(() -> new ReglaNegocioException("Seleccione un nivel de afectación válido."));
         }
-        String fechaHora = normalizarFechaHora(form.getFechaHora());
+        LocalDateTime fechaHora = normalizarFechaHora(form.getFechaHora());
         validarFecha(fechaHora, reporte.getEvento());
         reporte.setTipoDano(tipoDano);
         reporte.setUbicacion(ubicacion);
@@ -162,28 +162,29 @@ public class ReporteDanoService {
         reporte.setDescripcion(form.getDescripcion().trim());
     }
 
-    private String normalizarFechaHora(String valor) {
+    private LocalDateTime normalizarFechaHora(String valor) {
         String texto = valor.trim().replace('T', ' ');
         if (texto.length() == 16) texto += ":00";
         try {
-            LocalDateTime.parse(texto, FORMATO);
+            return LocalDateTime.parse(texto, FORMATO);
         } catch (DateTimeParseException ex) {
             throw new ReglaNegocioException("La fecha y hora no son válidas.");
         }
-        return texto;
     }
 
-    private void validarFecha(String fechaHora, Evento evento) {
-        LocalDateTime fecha = LocalDateTime.parse(fechaHora, FORMATO);
+    private void validarFecha(LocalDateTime fecha, Evento evento) {
         if (fecha.isAfter(LocalDateTime.now())) {
             throw new ReglaNegocioException("La fecha y hora del reporte no pueden ser futuras.");
         }
         try {
-            if (fecha.isBefore(LocalDateTime.parse(evento.getFechaHora(), FORMATO))) {
+            // Funciona tanto si evento.getFechaHora() es String como si es LocalDateTime
+            String fechaEventoStr = evento.getFechaHora().toString().replace('T', ' ');
+            if (fechaEventoStr.length() == 16) fechaEventoStr += ":00";
+            if (fecha.isBefore(LocalDateTime.parse(fechaEventoStr, FORMATO))) {
                 throw new ReglaNegocioException("La fecha y hora del reporte no pueden ser anteriores a las del sismo.");
             }
-        } catch (DateTimeParseException ex) {
-            // La fecha del sismo no tiene el formato esperado: no se puede comparar.
+        } catch (Exception ex) {
+            // Si la fecha del sismo es nula o tiene otro formato, no se bloquea
         }
     }
 }

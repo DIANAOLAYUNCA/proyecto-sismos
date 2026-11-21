@@ -9,11 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Seguimiento")
 public class Seguimiento {
-    /* Definición de estructura */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -36,24 +36,20 @@ public class Seguimiento {
     private String estado;
     
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
     
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
     
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
     
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
     
-    
-    /* Clase publica para los servlets */
     public Seguimiento() {}
     
-    
-    /* Constructor */
-    public Seguimiento(int id, Evento evento, String observaciones, Usuario responsable, String acciones, String estado, String creacionFecha, String creacionUsuario, String actualizacionFecha, String actualizacionUsuario) {
+    public Seguimiento(int id, Evento evento, String observaciones, Usuario responsable, String acciones, String estado, LocalDateTime creacionFecha, String creacionUsuario, LocalDateTime actualizacionFecha, String actualizacionUsuario) {
         this.id = id;
         this.evento = evento;
         this.observaciones = observaciones;
@@ -66,8 +62,6 @@ public class Seguimiento {
         this.actualizacionUsuario = actualizacionUsuario;
     }
 
-    
-    /* Definición de Getters y Setters */
     public int getId() {
         return id;
     }
@@ -116,11 +110,11 @@ public class Seguimiento {
         this.estado = estado;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -132,11 +126,11 @@ public class Seguimiento {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 
@@ -147,5 +141,4 @@ public class Seguimiento {
     public void setActualizacionUsuario(String actualizacionUsuario) {
         this.actualizacionUsuario = actualizacionUsuario;
     }
-    
 }

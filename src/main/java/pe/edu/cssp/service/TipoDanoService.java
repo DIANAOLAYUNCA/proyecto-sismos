@@ -8,6 +8,7 @@ import pe.edu.cssp.repository.TipoDanoRepository;
 import pe.edu.cssp.web.error.RecursoNoEncontradoException;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.TipoDanoForm;
+import java.time.LocalDateTime;
 
 @Service
 public class TipoDanoService {
@@ -31,7 +32,7 @@ public class TipoDanoService {
             throw new ReglaNegocioException("El código del tipo de daño ya está registrado.");
         }
         TipoDano tipoDano = new TipoDano();
-        tipoDano.setCreacionFecha(UbicacionService.fecha());
+        tipoDano.setCreacionFecha(LocalDateTime.now());
         tipoDano.setCreacionUsuario("sistema");
         completar(tipoDano, form, codigo);
         return tipoDanoRepository.save(tipoDano);
@@ -44,7 +45,7 @@ public class TipoDanoService {
         tipoDanoRepository.findByCodigoIgnoreCase(codigo).ifPresent(otro -> {
             if (otro.getId() != id) throw new ReglaNegocioException("El código ya pertenece a otro tipo de daño.");
         });
-        tipoDano.setActualizacionFecha(UbicacionService.fecha());
+        tipoDano.setActualizacionFecha(LocalDateTime.now());
         tipoDano.setActualizacionUsuario("sistema");
         completar(tipoDano, form, codigo);
         return tipoDanoRepository.save(tipoDano);
@@ -57,7 +58,7 @@ public class TipoDanoService {
             throw new ReglaNegocioException("El tipo de daño ya fue eliminado.");
         }
         tipoDano.setEstado("INACTIVO");
-        tipoDano.setActualizacionFecha(UbicacionService.fecha());
+        tipoDano.setActualizacionFecha(LocalDateTime.now());
         tipoDano.setActualizacionUsuario("sistema");
         tipoDanoRepository.save(tipoDano);
     }

@@ -10,11 +10,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Rol")
 public class Rol {
-    /* Definición de estructura */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -26,31 +26,26 @@ public class Rol {
     private String codigo;
     
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
     
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
     
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
     
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
     
-//  Otras relaciones
     @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Usuario> usuarios = new ArrayList<>();
     
     @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RolModuloPermiso> permisos = new ArrayList<>();
     
-    
-    /* Clase publica para los servlets */
     public Rol() {}
     
-    
-    /* Constructor */
-    public Rol(int id, String nombre, String codigo, String creacionFecha, String creacionUsuario, String actualizacionFecha, String actualizacionUsuario) {
+    public Rol(int id, String nombre, String codigo, LocalDateTime creacionFecha, String creacionUsuario, LocalDateTime actualizacionFecha, String actualizacionUsuario) {
         this.id = id;
         this.nombre = nombre;
         this.codigo = codigo;
@@ -60,7 +55,6 @@ public class Rol {
         this.actualizacionUsuario = actualizacionUsuario;
     }
     
-    /* Definición de Getters y Setters */
     public int getId() {
         return id;
     }
@@ -85,11 +79,11 @@ public class Rol {
         this.codigo = codigo;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -101,11 +95,11 @@ public class Rol {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 
@@ -132,5 +126,4 @@ public class Rol {
     public void setPermisos(List<RolModuloPermiso> permisos) {
         this.permisos = permisos;
     }
-    
 }

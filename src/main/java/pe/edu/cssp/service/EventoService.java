@@ -43,7 +43,7 @@ public class EventoService {
     public List<Evento> listar(String codigo, String fecha, Double magnitudMinima, String estado, Integer ubicacionId) {
         return eventoRepository.listar().stream()
                 .filter(e -> codigo == null || codigo.isBlank() || e.getCodigo().toUpperCase().contains(codigo.trim().toUpperCase()))
-                .filter(e -> fecha == null || fecha.isBlank() || e.getFechaHora().startsWith(fecha.trim()))
+                .filter(e -> fecha == null || fecha.isBlank() || (e.getFechaHora() != null && e.getFechaHora().format(FORMATO).startsWith(fecha.trim())))
                 .filter(e -> magnitudMinima == null || e.getMagnitud() >= magnitudMinima)
                 .filter(e -> estado == null || estado.isBlank() || estado.equalsIgnoreCase(e.getEstado()))
                 .filter(e -> ubicacionId == null || e.getUbicacion().getId() == ubicacionId)
@@ -75,7 +75,7 @@ public class EventoService {
             throw new ReglaNegocioException("El código del sismo ya está registrado.");
         }
         Evento evento = new Evento();
-        evento.setCreacionFecha(UbicacionService.fecha());
+        evento.setCreacionFecha(LocalDateTime.now());
         evento.setCreacionUsuario("sistema");
         completar(evento, form, codigo);
         return eventoRepository.save(evento);
@@ -88,7 +88,7 @@ public class EventoService {
         eventoRepository.findByCodigoIgnoreCase(codigo).ifPresent(otro -> {
             if (otro.getId() != id) throw new ReglaNegocioException("El código ya pertenece a otro sismo.");
         });
-        evento.setActualizacionFecha(UbicacionService.fecha());
+        evento.setActualizacionFecha(LocalDateTime.now());
         evento.setActualizacionUsuario("sistema");
         completar(evento, form, codigo);
         return eventoRepository.save(evento);
@@ -101,7 +101,7 @@ public class EventoService {
             throw new ReglaNegocioException("El sismo ya fue eliminado.");
         }
         evento.setEstado("INACTIVO");
-        evento.setActualizacionFecha(UbicacionService.fecha());
+        evento.setActualizacionFecha(LocalDateTime.now());
         evento.setActualizacionUsuario("sistema");
         eventoRepository.save(evento);
     }
@@ -120,7 +120,7 @@ public class EventoService {
                 .orElseThrow(() -> new ReglaNegocioException("Seleccione un nivel de afectación válido."));
         evento.setEstacion(estacion);
         evento.setCodigo(codigo);
-        evento.setFechaHora(normalizarFechaHora(form.getFechaHora()));
+        evento.setActualizacionFecha(LocalDateTime.now());
         evento.setMagnitud(form.getMagnitud().doubleValue());
         evento.setProfundidad(form.getProfundidad().doubleValue());
         evento.setLatitud(form.getLatitud().doubleValue());
@@ -132,14 +132,13 @@ public class EventoService {
         evento.setEstado(form.getEstado());
     }
 
-    private String normalizarFechaHora(String valor) {
+    private LocalDateTime normalizarFechaHora(String valor) {
         String texto = valor.trim().replace('T', ' ');
         if (texto.length() == 16) texto += ":00";
         try {
-            LocalDateTime.parse(texto, FORMATO);
+            return LocalDateTime.parse(texto, FORMATO);
         } catch (DateTimeParseException ex) {
             throw new ReglaNegocioException("La fecha y hora no son válidas.");
         }
-        return texto;
     }
 }

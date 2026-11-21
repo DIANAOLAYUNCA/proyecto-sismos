@@ -1,6 +1,7 @@
 package pe.edu.cssp.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +44,7 @@ public class EstacionService {
             throw new ReglaNegocioException("El código de la estación ya está registrado.");
         }
         Estacion estacion = new Estacion();
-        estacion.setCreacionFecha(UbicacionService.fecha());
+        estacion.setCreacionFecha(LocalDateTime.now());
         estacion.setCreacionUsuario("sistema");
         completar(estacion, form, codigo);
         return estacionRepository.save(estacion);
@@ -56,7 +57,7 @@ public class EstacionService {
         estacionRepository.findByCodigoIgnoreCase(codigo).ifPresent(otra -> {
             if (otra.getId() != id) throw new ReglaNegocioException("El código ya pertenece a otra estación.");
         });
-        estacion.setActualizacionFecha(UbicacionService.fecha());
+        estacion.setActualizacionFecha(LocalDateTime.now());
         estacion.setActualizacionUsuario("sistema");
         completar(estacion, form, codigo);
         return estacionRepository.save(estacion);
@@ -69,7 +70,7 @@ public class EstacionService {
             throw new ReglaNegocioException("La estación ya fue dada de baja.");
         }
         estacion.setEstado("INACTIVA");
-        estacion.setActualizacionFecha(UbicacionService.fecha());
+        estacion.setActualizacionFecha(LocalDateTime.now());
         estacion.setActualizacionUsuario("sistema");
         estacionRepository.save(estacion);
     }
@@ -92,7 +93,7 @@ public class EstacionService {
         estacion.setUbicacion(ubicacion);
         estacion.setLatitud(form.getLatitud());
         estacion.setLongitud(form.getLongitud());
-        estacion.setInstalacionFecha(form.getInstalacionFecha());
+        estacion.setInstalacionFecha(instalacion);
         estacion.setEstado(form.getEstado());
     }
 }

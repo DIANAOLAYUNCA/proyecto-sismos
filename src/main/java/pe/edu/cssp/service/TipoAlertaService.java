@@ -8,6 +8,7 @@ import pe.edu.cssp.repository.TipoAlertaRepository;
 import pe.edu.cssp.web.error.RecursoNoEncontradoException;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.TipoAlertaForm;
+import java.time.LocalDateTime;
 
 @Service
 public class TipoAlertaService {
@@ -31,7 +32,7 @@ public class TipoAlertaService {
             throw new ReglaNegocioException("El código del tipo de alerta ya está registrado.");
         }
         TipoAlerta tipoAlerta = new TipoAlerta();
-        tipoAlerta.setCreacionFecha(UbicacionService.fecha());
+        tipoAlerta.setCreacionFecha(LocalDateTime.now());
         tipoAlerta.setCreacionUsuario("sistema");
         completar(tipoAlerta, form, codigo);
         return tipoAlertaRepository.save(tipoAlerta);
@@ -44,7 +45,7 @@ public class TipoAlertaService {
         tipoAlertaRepository.findByCodigoIgnoreCase(codigo).ifPresent(otro -> {
             if (otro.getId() != id) throw new ReglaNegocioException("El código ya pertenece a otro tipo de alerta.");
         });
-        tipoAlerta.setActualizacionFecha(UbicacionService.fecha());
+        tipoAlerta.setActualizacionFecha(LocalDateTime.now());
         tipoAlerta.setActualizacionUsuario("sistema");
         completar(tipoAlerta, form, codigo);
         return tipoAlertaRepository.save(tipoAlerta);
@@ -57,7 +58,7 @@ public class TipoAlertaService {
             throw new ReglaNegocioException("El tipo de alerta ya fue eliminado.");
         }
         tipoAlerta.setEstado("INACTIVO");
-        tipoAlerta.setActualizacionFecha(UbicacionService.fecha());
+        tipoAlerta.setActualizacionFecha(LocalDateTime.now());
         tipoAlerta.setActualizacionUsuario("sistema");
         tipoAlertaRepository.save(tipoAlerta);
     }

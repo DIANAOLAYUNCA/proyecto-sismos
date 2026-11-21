@@ -1,6 +1,5 @@
 package pe.edu.cssp.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +13,8 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Estacion")
@@ -40,19 +41,19 @@ public class Estacion {
     private BigDecimal longitud;
 
     @Column(name = "instalacion_fecha", nullable = false)
-    private String instalacionFecha;
+    private LocalDate instalacionFecha;
 
     @Column(name = "estado", nullable = false, length = 20)
     private String estado;
 
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
 
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
 
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
 
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
@@ -64,10 +65,9 @@ public class Estacion {
     public Estacion() { }
 
     public Estacion(int id, String codigo, String nombre, Ubicacion ubicacion,
-            BigDecimal latitud, BigDecimal longitud, String instalacionFecha,
-            String estado, String creacionFecha, String creacionUsuario,
-            String actualizacionFecha, String actualizacionUsuario)
-    {
+            BigDecimal latitud, BigDecimal longitud, LocalDate instalacionFecha,
+            String estado, LocalDateTime creacionFecha, String creacionUsuario,
+            LocalDateTime actualizacionFecha, String actualizacionUsuario) {
         this.id = id;
         this.codigo = codigo;
         this.nombre = nombre;
@@ -129,11 +129,11 @@ public class Estacion {
         this.longitud = longitud;
     }
     
-    public String getInstalacionFecha() {
+    public LocalDate getInstalacionFecha() {
         return instalacionFecha;
     }
     
-    public void setInstalacionFecha(String instalacionFecha) { 
+    public void setInstalacionFecha(LocalDate instalacionFecha) { 
         this.instalacionFecha = instalacionFecha; 
     }
     
@@ -145,11 +145,11 @@ public class Estacion {
         this.estado = estado;
     }
     
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha; 
     }
     
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
     
@@ -161,11 +161,11 @@ public class Estacion {
         this.creacionUsuario = creacionUsuario; 
     }
     
-    public String getActualizacionFecha() { 
+    public LocalDateTime getActualizacionFecha() { 
         return actualizacionFecha;
     }
     
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
     

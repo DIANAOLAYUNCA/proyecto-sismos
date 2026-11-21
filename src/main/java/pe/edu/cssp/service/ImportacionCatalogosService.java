@@ -2,12 +2,14 @@ package pe.edu.cssp.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -222,8 +224,8 @@ public class ImportacionCatalogosService {
         return t;
     }
 
-    private void auditoria(java.util.function.Consumer<String> fecha, java.util.function.Consumer<String> usuario) {
-        fecha.accept(UbicacionService.fecha());
+    private void auditoria(Consumer<LocalDateTime> fecha, Consumer<String> usuario) {
+        fecha.accept(LocalDateTime.now());
         usuario.accept(USUARIO);
     }
 

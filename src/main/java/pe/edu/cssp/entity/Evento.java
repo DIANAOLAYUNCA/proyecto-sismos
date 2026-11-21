@@ -13,6 +13,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Evento")
@@ -30,18 +31,18 @@ public class Evento {
     private String codigo;
 
     @Column(name = "fecha_hora", nullable = false)
-    private String fechaHora;
+    private LocalDateTime fechaHora;
 
-    @Column(name = "magnitud", nullable = false)
+    @Column(name = "magnitud", nullable = false, columnDefinition = "DECIMAL(4,2)")
     private double magnitud;
 
-    @Column(name = "profundidad", nullable = false)
+    @Column(name = "profundidad", nullable = false, columnDefinition = "DECIMAL(6,2)")
     private double profundidad;
 
-    @Column(name = "latitud", nullable = false)
+    @Column(name = "latitud", nullable = false, columnDefinition = "DECIMAL(9,6)")
     private double latitud;
 
-    @Column(name = "longitud", nullable = false)
+    @Column(name = "longitud", nullable = false, columnDefinition = "DECIMAL(9,6)")
     private double longitud;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -56,13 +57,13 @@ public class Evento {
     private String estado;
 
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
 
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
 
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
 
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
@@ -74,7 +75,6 @@ public class Evento {
     @JoinColumn(name = "tipo_alerta_id", nullable = false)
     private TipoAlerta tipoAlerta;
 
-//  Otras relaciones
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seguimiento> seguimientos = new ArrayList<>();
 
@@ -84,11 +84,11 @@ public class Evento {
     public Evento() {
     }
 
-    public Evento(int id, Estacion estacion, String codigo, String fechaHora,
+    public Evento(int id, Estacion estacion, String codigo, LocalDateTime fechaHora,
             double magnitud, double profundidad, double latitud, double longitud,
             Ubicacion ubicacion, AfectacionNivel afectacionNivel, String estado,
-            String creacionFecha, String creacionUsuario,
-            String actualizacionFecha, String actualizacionUsuario) {
+            LocalDateTime creacionFecha, String creacionUsuario,
+            LocalDateTime actualizacionFecha, String actualizacionUsuario) {
         this.id = id;
         this.estacion = estacion;
         this.codigo = codigo;
@@ -146,11 +146,11 @@ public class Evento {
         this.codigo = codigo;
     }
 
-    public String getFechaHora() {
+    public LocalDateTime getFechaHora() {
         return fechaHora;
     }
 
-    public void setFechaHora(String fechaHora) {
+    public void setFechaHora(LocalDateTime fechaHora) {
         this.fechaHora = fechaHora;
     }
 
@@ -210,11 +210,11 @@ public class Evento {
         this.estado = estado;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -226,11 +226,11 @@ public class Evento {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 

@@ -3,6 +3,7 @@ package pe.edu.cssp.entity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Ubicacion")
@@ -26,11 +27,11 @@ public class Ubicacion {
     @JoinColumn(name = "distrito_id")
     private Distrito distrito;
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
     @OneToMany(mappedBy = "ubicacion")
@@ -94,11 +95,11 @@ public class Ubicacion {
         this.distrito = distrito;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -110,11 +111,11 @@ public class Ubicacion {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 

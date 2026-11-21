@@ -11,6 +11,7 @@ import pe.edu.cssp.repository.ReporteDanoRepository;
 import pe.edu.cssp.web.error.RecursoNoEncontradoException;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.AfectacionNivelForm;
+import java.time.LocalDateTime;
 
 @Service
 public class AfectacionNivelService {
@@ -42,7 +43,7 @@ public class AfectacionNivelService {
             throw new ReglaNegocioException("El código del nivel de afectación ya está registrado.");
         }
         AfectacionNivel nivel = new AfectacionNivel();
-        nivel.setCreacionFecha(UbicacionService.fecha());
+        nivel.setCreacionFecha(LocalDateTime.now());
         nivel.setCreacionUsuario("sistema");
         completar(nivel, form, codigo);
         return afectacionNivelRepository.save(nivel);
@@ -55,7 +56,7 @@ public class AfectacionNivelService {
         afectacionNivelRepository.findByCodigoIgnoreCase(codigo).ifPresent(otro -> {
             if (otro.getId() != id) throw new ReglaNegocioException("El código ya pertenece a otro nivel de afectación.");
         });
-        nivel.setActualizacionFecha(UbicacionService.fecha());
+        nivel.setActualizacionFecha(LocalDateTime.now());
         nivel.setActualizacionUsuario("sistema");
         completar(nivel, form, codigo);
         return afectacionNivelRepository.save(nivel);

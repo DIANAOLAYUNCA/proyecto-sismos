@@ -13,6 +13,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Distrito")
@@ -33,13 +34,13 @@ public class Distrito {
     private String codigo;
     
     @Column(name = "creacion_fecha", nullable = false)
-    private String creacionFecha;
+    private LocalDateTime creacionFecha;
     
     @Column(name = "creacion_usuario", nullable = false)
     private String creacionUsuario;
     
     @Column(name = "actualizacion_fecha")
-    private String actualizacionFecha;
+    private LocalDateTime actualizacionFecha;
     
     @Column(name = "actualizacion_usuario")
     private String actualizacionUsuario;
@@ -52,8 +53,7 @@ public class Distrito {
     public Distrito() {}
     
     /* Constructor */
-    public Distrito(int id, String nombre, String codigo, Provincia provincia, String creacionFecha, String creacionUsuario, String actualizacionFecha, String actualizacionUsuario) {
-        this.id = id;
+    public Distrito(int id, String nombre, String codigo, Provincia provincia, LocalDateTime creacionFecha, String creacionUsuario, LocalDateTime actualizacionFecha, String actualizacionUsuario) {        this.id = id;
         this.nombre = nombre;
         this.codigo = codigo;
         this.provincia = provincia;
@@ -96,11 +96,11 @@ public class Distrito {
         this.provincia = provincia;
     }
 
-    public String getCreacionFecha() {
+    public LocalDateTime getCreacionFecha() {
         return creacionFecha;
     }
 
-    public void setCreacionFecha(String creacionFecha) {
+    public void setCreacionFecha(LocalDateTime creacionFecha) {
         this.creacionFecha = creacionFecha;
     }
 
@@ -112,11 +112,11 @@ public class Distrito {
         this.creacionUsuario = creacionUsuario;
     }
 
-    public String getActualizacionFecha() {
+    public LocalDateTime getActualizacionFecha() {
         return actualizacionFecha;
     }
 
-    public void setActualizacionFecha(String actualizacionFecha) {
+    public void setActualizacionFecha(LocalDateTime actualizacionFecha) {
         this.actualizacionFecha = actualizacionFecha;
     }
 
