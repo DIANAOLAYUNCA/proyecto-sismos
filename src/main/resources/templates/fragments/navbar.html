@@ -1,21 +1,198 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
-<nav class="navbar" th:fragment="navbar">
-<!--    <div class="navbar-interior">
-        <a class="navbar-marca" th:href="@{/}">CSSP <span>Sismos</span></a>
-        <button class="navbar-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">&#9776;</button>
-        <ul class="navbar-enlaces" id="menu-principal">
-            <li><a th:href="@{/eventos}" data-ruta="/eventos">Sismos</a></li>
-            <li><a th:href="@{/reportes-dano}" data-ruta="/reportes-dano">Reportes de daño</a></li>
-            <li><a th:href="@{/estaciones}" data-ruta="/estaciones">Estaciones</a></li>
-            <li><a th:href="@{/ubicaciones}" data-ruta="/ubicaciones">Ubicaciones</a></li>
-            <li><a th:href="@{/afectacionniveles}" data-ruta="/afectacionniveles">Niveles</a></li>
-            <li><a th:href="@{/tipos-alerta}" data-ruta="/tipos-alerta">Tipos de alerta</a></li>
-            <li><a th:href="@{/tipos-dano}" data-ruta="/tipos-dano">Tipos de daño</a></li>
-            <li><a th:href="@{/importacion}" data-ruta="/importacion">Importar CSV</a></li>
-        </ul>
-    </div>-->
-</nav>
+  <nav class="navbar-cssp" th:fragment="navbar">
+    <style>
+      .navbar-cssp {
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        color: #f8fafc;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      .navbar-cssp-interior {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 0.75rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .navbar-cssp-marca {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        text-decoration: none;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.15rem;
+        letter-spacing: -0.01em;
+      }
+      .navbar-cssp-marca .badge-ver {
+        background: rgba(56, 189, 248, 0.2);
+        color: #7dd3fc;
+        border: 1px solid rgba(125, 211, 252, 0.35);
+        font-size: 0.7rem;
+        padding: 0.18rem 0.5rem;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+      .navbar-cssp .navbar-toggle {
+        display: none;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        cursor: pointer;
+      }
+      .navbar-cssp .navbar-enlaces {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin: 0;
+        padding: 0;
+        flex-wrap: wrap;
+      }
+      .navbar-cssp .navbar-enlaces a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 0.86rem;
+        font-weight: 500;
+        padding: 0.42rem 0.7rem;
+        border-radius: 6px;
+        transition: all 0.18s ease;
+      }
+      .navbar-cssp .navbar-enlaces a:hover,
+      .navbar-cssp .navbar-enlaces a.activo {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.15);
+        font-weight: 600;
+      }
+      .navbar-cssp-usuario {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-left: 0.75rem;
+        border-left: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .usuario-perfil {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+      }
+      .usuario-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #38bdf8, #0284c7);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+      }
+      .usuario-info {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+      }
+      .usuario-nombre {
+        font-size: 0.84rem;
+        font-weight: 600;
+        color: #ffffff;
+      }
+      .usuario-rol {
+        font-size: 0.7rem;
+        color: #94a3b8;
+      }
+      .btn-salir {
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        border: 1px solid rgba(248, 113, 113, 0.35);
+        padding: 0.38rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      .btn-salir:hover {
+        background: #dc2626;
+        color: #ffffff;
+        border-color: #dc2626;
+      }
+      @media (max-width: 992px) {
+        .navbar-cssp .navbar-toggle { display: inline-block; }
+        .navbar-cssp .navbar-enlaces {
+          display: none;
+          width: 100%;
+          flex-direction: column;
+          align-items: stretch;
+          padding-top: 0.5rem;
+        }
+        .navbar-cssp .navbar-enlaces.abierto { display: flex; }
+        .navbar-cssp-usuario {
+          border-left: none;
+          padding-left: 0;
+          width: 100%;
+          justify-content: space-between;
+          padding-top: 0.5rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+      }
+    </style>
+
+    <div class="navbar-cssp-interior">
+      <!-- Marca -->
+      <a class="navbar-cssp-marca" th:href="@{/reportes}">
+        <span>CSSP Sismos</span>
+        <span class="badge-ver">v2.0</span>
+      </a>
+
+      <!-- Botón móvil (controlado por static.js) -->
+      <button class="navbar-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-principal">☰</button>
+
+      <!-- Enlaces (controlados por marcarPaginaActiva() en static.js) -->
+      <ul class="navbar-enlaces" id="menu-principal">
+        <li><a th:href="@{/reportes}" data-ruta="/reportes">Dashboard</a></li>
+        <li><a th:href="@{/eventos}" data-ruta="/eventos">Sismos</a></li>
+        <li><a th:href="@{/reportes-dano}" data-ruta="/reportes-dano">Daños</a></li>
+        <li><a th:href="@{/estaciones}" data-ruta="/estaciones">Estaciones</a></li>
+        <li><a th:href="@{/ubicaciones}" data-ruta="/ubicaciones">Ubicaciones</a></li>
+        <li><a th:href="@{/afectacionniveles}" data-ruta="/afectacionniveles">Niveles</a></li>
+        <li><a th:href="@{/tipos-alerta}" data-ruta="/tipos-alerta">Alertas</a></li>
+        <li><a th:href="@{/tipos-dano}" data-ruta="/tipos-dano">Tipos daño</a></li>
+        <li><a th:href="@{/importacion}" data-ruta="/importacion">Importar CSV</a></li>
+      </ul>
+
+      <!-- Usuario conectado + Avatar + Cerrar sesión -->
+      <div class="navbar-cssp-usuario" th:with="usuario=${#authentication != null ? #authentication.name : 'Invitado'}">
+        <div class="usuario-perfil">
+          <div class="usuario-avatar" th:text="${#strings.substring(usuario, 0, 1)}">U</div>
+          <div class="usuario-info">
+            <span class="usuario-nombre" th:text="${usuario}">usuario</span>
+            <span class="usuario-rol" th:if="${#authentication != null and !#lists.isEmpty(#authentication.authorities)}"
+                  th:text="${#strings.replace(#authentication.authorities[0].authority, 'ROLE_', '')}">OPERADOR</span>
+          </div>
+        </div>
+
+        <form th:action="@{/logout}" method="post" style="margin:0;">
+          <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+          <button type="submit" class="btn-salir">Cerrar sesión</button>
+        </form>
+      </div>
+    </div>
+  </nav>
 </body>
 </html>
