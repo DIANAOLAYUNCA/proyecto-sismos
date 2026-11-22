@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso denegado | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Sistema de sismos</span>
+        <h1>Acceso denegado</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error">
+            No eres administrador. Solo el administrador puede crear, editar, eliminar o importar registros.
+        </div>
+        <nav class="acciones">
+            <a class="boton" th:href="@{/eventos}">Ir a sismos</a>
+            <a href="javascript:history.back()">Volver atrás</a>
+        </nav>
+    </section>
+</main>
+</body>
+</html>

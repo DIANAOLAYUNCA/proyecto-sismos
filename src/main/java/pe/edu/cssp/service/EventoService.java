@@ -120,6 +120,7 @@ public class EventoService {
                 .orElseThrow(() -> new ReglaNegocioException("Seleccione un nivel de afectación válido."));
         evento.setEstacion(estacion);
         evento.setCodigo(codigo);
+         evento.setFechaHora(normalizarFechaHora(form.getFechaHora()));
         evento.setActualizacionFecha(LocalDateTime.now());
         evento.setMagnitud(form.getMagnitud().doubleValue());
         evento.setProfundidad(form.getProfundidad().doubleValue());
