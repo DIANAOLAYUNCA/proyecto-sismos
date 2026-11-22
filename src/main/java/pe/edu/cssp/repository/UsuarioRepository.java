@@ -5,6 +5,6 @@ import pe.edu.cssp.entity.Usuario;
 
 import java.util.Optional;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByUsuarioAndEstado(String usuario, String estado);
 }

@@ -172,19 +172,12 @@ public class ReporteDanoService {
         }
     }
 
-    private void validarFecha(LocalDateTime fecha, Evento evento) {
+        private void validarFecha(LocalDateTime fecha, Evento evento) {
         if (fecha.isAfter(LocalDateTime.now())) {
             throw new ReglaNegocioException("La fecha y hora del reporte no pueden ser futuras.");
         }
-        try {
-            // Funciona tanto si evento.getFechaHora() es String como si es LocalDateTime
-            String fechaEventoStr = evento.getFechaHora().toString().replace('T', ' ');
-            if (fechaEventoStr.length() == 16) fechaEventoStr += ":00";
-            if (fecha.isBefore(LocalDateTime.parse(fechaEventoStr, FORMATO))) {
-                throw new ReglaNegocioException("La fecha y hora del reporte no pueden ser anteriores a las del sismo.");
-            }
-        } catch (Exception ex) {
-            // Si la fecha del sismo es nula o tiene otro formato, no se bloquea
+        if (evento.getFechaHora() != null && fecha.isBefore(evento.getFechaHora())) {
+            throw new ReglaNegocioException("La fecha y hora del reporte no pueden ser anteriores a las del sismo.");
         }
     }
 }

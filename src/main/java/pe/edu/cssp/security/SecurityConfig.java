@@ -2,6 +2,7 @@ package pe.edu.cssp.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,23 +20,16 @@ public class SecurityConfig {
         http
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests(autorizacion -> autorizacion
-                        .requestMatchers("/login", "/css/**", "/js/**", "/error").permitAll()
-                        .requestMatchers(
-                                "/",
-                                "/eventos/**",
-                                "/reportes-dano/**",
-                                "/estaciones/**",
-                                "/ubicaciones/**",
-                                "/afectacionniveles/**",
-                                "/tipos-alerta/**",
-                                "/tipos-dano/**",
-                                "/importacion/**",
-                                "/reportes/**"
-                        ).authenticated()
+                        .requestMatchers("/login", "/css/**", "/error").permitAll()
+                        .requestMatchers("/importacion/**", "/*/nuevo", "/*/*/editar", "/*/*/eliminar").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
+                        .requestMatchers("/eventos/**", "/reportes-dano/**", "/estaciones/**", "/ubicaciones/**",
+                                "/afectacionniveles/**", "/tipos-alerta/**", "/tipos-dano/**",
+                                "/reportes/**").authenticated()
                         .anyRequest().authenticated())
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/reportes", true)
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
