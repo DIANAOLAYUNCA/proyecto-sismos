@@ -32,6 +32,9 @@ $env:DB_PASSWORD="su-clave"
 
 Abra http://localhost:8081/ (puerto configurable con `SERVER_PORT`).
 
+## Inicio de sesión
+Todo requiere sesión. El seed trae usuarios de prueba, todos con la contraseña `123456` (guardada con BCrypt): `aramirez` y `cmendoza` (rol ADMIN, pueden crear, editar, eliminar e importar), `jperez` (ANALISTA), `lmendoza` (OPERADOR) e `invitado` (CONSULTA). Sin sesión se redirige a `/login`; los roles distintos de ADMIN pueden consultar pero reciben 403 al intentar crear, editar, eliminar o importar.
+
 ## Pruebas
 ```powershell
 .\mvnw.cmd test
