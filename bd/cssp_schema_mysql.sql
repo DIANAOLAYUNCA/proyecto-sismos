@@ -111,11 +111,14 @@ CREATE TABLE Distrito (
     provincia_id          INT UNSIGNED NOT NULL,
     nombre                VARCHAR(100) NOT NULL,
     codigo                VARCHAR(10)  NOT NULL,
+    estado                VARCHAR(10)  NOT NULL DEFAULT 'ACTIVO',
     creacion_fecha        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     creacion_usuario      VARCHAR(100) NOT NULL,
     actualizacion_fecha   DATETIME     NULL     ON UPDATE CURRENT_TIMESTAMP,
     actualizacion_usuario VARCHAR(100) NULL,
-    CONSTRAINT fk_distrito_provincia FOREIGN KEY (provincia_id) REFERENCES Provincia(id)
+    UNIQUE KEY uq_distrito_provincia_codigo (provincia_id, codigo),
+    CONSTRAINT fk_distrito_provincia FOREIGN KEY (provincia_id) REFERENCES Provincia(id),
+    CONSTRAINT chk_distrito_estado   CHECK (estado IN ('ACTIVO', 'INACTIVO'))
 ) ENGINE=InnoDB;
 
 -- Ubigeo (en este proyecto se llama Ubicacion)
@@ -150,6 +153,7 @@ CREATE TABLE Estacion (
     codigo                VARCHAR(20)   NOT NULL,
     nombre                VARCHAR(150)  NOT NULL,
     ubicacion_id          INT UNSIGNED  NOT NULL,
+    distrito_id           INT UNSIGNED  NULL,
     latitud               DECIMAL(9,6)  NOT NULL,
     longitud              DECIMAL(9,6)  NOT NULL,
     instalacion_fecha     DATE          NOT NULL,
@@ -160,6 +164,7 @@ CREATE TABLE Estacion (
     actualizacion_usuario VARCHAR(100)  NULL,
     UNIQUE KEY uq_estacion_codigo (codigo),
     CONSTRAINT fk_estacion_ubicacion FOREIGN KEY (ubicacion_id) REFERENCES Ubicacion(id),
+    CONSTRAINT fk_estacion_distrito  FOREIGN KEY (distrito_id)  REFERENCES Distrito(id),
     CONSTRAINT chk_estacion_estado  CHECK (estado IN ('ACTIVA', 'INACTIVA')),
     CONSTRAINT chk_estacion_lat     CHECK (latitud  BETWEEN -90  AND 90),
     CONSTRAINT chk_estacion_long    CHECK (longitud BETWEEN -180 AND 180)
@@ -240,6 +245,7 @@ CREATE TABLE Evento (
     longitud              DECIMAL(9,6)  NOT NULL,
     referencia            VARCHAR(255)  NOT NULL,
     ubicacion_id          INT UNSIGNED  NOT NULL,
+    distrito_id           INT UNSIGNED  NULL,
     tipo_alerta_id        INT UNSIGNED  NOT NULL,
     afectacion_nivel_id   INT UNSIGNED  NULL,
     estado                VARCHAR(20)   NOT NULL DEFAULT 'REGISTRADO',
@@ -250,6 +256,7 @@ CREATE TABLE Evento (
     UNIQUE KEY uq_evento_codigo (codigo),
     CONSTRAINT fk_evento_estacion         FOREIGN KEY (estacion_id)         REFERENCES Estacion(id),
     CONSTRAINT fk_evento_ubicacion        FOREIGN KEY (ubicacion_id)        REFERENCES Ubicacion(id),
+    CONSTRAINT fk_evento_distrito         FOREIGN KEY (distrito_id)         REFERENCES Distrito(id),
     CONSTRAINT fk_evento_tipo_alerta      FOREIGN KEY (tipo_alerta_id)      REFERENCES Tipo_Alerta(id),
     CONSTRAINT fk_evento_afectacion_nivel FOREIGN KEY (afectacion_nivel_id) REFERENCES Afectacion_Nivel(id),
 	CONSTRAINT chk_evento_estado    CHECK (estado IN ('REGISTRADO', 'EN_EVALUACION', 'EN_SEGUIMIENTO', 'CERRADO', 'INACTIVO')),

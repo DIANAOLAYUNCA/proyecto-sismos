@@ -21,6 +21,7 @@
             <div><dt>Código</dt><dd th:text="${estacion.codigo}"></dd></div>
             <div><dt>Nombre</dt><dd th:text="${estacion.nombre}"></dd></div>
             <div><dt>Ubicación</dt><dd th:text="${estacion.ubicacion.codigo + ' - ' + estacion.ubicacion.nombre}"></dd></div>
+            <div><dt>Distrito</dt><dd th:text="${estacion.distrito != null ? estacion.distrito.provincia.nombre + ' - ' + estacion.distrito.nombre : ''}"></dd></div>
             <div><dt>Latitud</dt><dd th:text="${estacion.latitud}"></dd></div>
             <div><dt>Longitud</dt><dd th:text="${estacion.longitud}"></dd></div>
             <div><dt>Fecha de instalación</dt><dd th:text="${estacion.instalacionFecha}"></dd></div>

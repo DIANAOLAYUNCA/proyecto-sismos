@@ -28,17 +28,22 @@
     <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
     <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
     <section class="tarjeta">
-        <h2>Niveles encontrados: <span th:text="${#lists.size(niveles)}">0</span></h2>
+        <h2>Niveles encontrados: <span th:text="${pagina.totalElementos}">0</span></h2>
         <div class="tabla-scroll">
             <table>
                 <thead>
-                    <tr><th>ID</th><th>Código</th><th>Nombre</th><th>Acciones</th></tr>
+                    <tr>
+                        <th><a class="orden" th:href="${pagina.urlOrden('id')}">ID <span th:text="${pagina.flecha('id')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('codigo')}">Código <span th:text="${pagina.flecha('codigo')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('nombre')}">Nombre <span th:text="${pagina.flecha('nombre')}"></span></a></th>
+                        <th>Acciones</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr th:if="${#lists.isEmpty(niveles)}">
+                    <tr th:if="${#lists.isEmpty(pagina.items)}">
                         <td colspan="4" class="vacio">No se encontraron niveles de afectación.</td>
                     </tr>
-                    <tr th:each="nivel : ${niveles}">
+                    <tr th:each="nivel : ${pagina.items}">
                         <td th:text="${nivel.id}"></td>
                         <td th:text="${nivel.codigo}"></td>
                         <td th:text="${nivel.nombre}"></td>
@@ -71,6 +76,7 @@
                 </tbody>
             </table>
         </div>
+        <div th:replace="~{fragments/paginacion :: barra(${pagina})}"></div>
     </section>
 </main>
 </body>

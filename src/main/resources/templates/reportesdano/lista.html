@@ -37,23 +37,34 @@
                             th:text="${e.codigo + ' - ' + e.referencia}"></option>
                 </select>
             </label>
+            <input type="hidden" name="tamano" th:value="${pagina.tamano}">
+            <input type="hidden" name="orden" th:value="${pagina.orden}">
+            <input type="hidden" name="dir" th:value="${pagina.dir}">
             <button type="submit">Filtrar</button>
             <a th:href="@{/reportes-dano}">Limpiar</a>
         </form>
     </section>
     <section class="tarjeta">
-        <h2>Reportes encontrados: <span th:text="${#lists.size(reportes)}">0</span></h2>
+        <h2>Reportes encontrados: <span th:text="${pagina.totalElementos}">0</span></h2>
         <p class="nota">Total de personas afectadas (sin contar reportes descartados): <strong th:text="${totalAfectados}">0</strong></p>
         <div class="tabla-scroll">
             <table>
                 <thead>
-                    <tr><th>ID</th><th>Sismo</th><th>Fecha y hora</th><th>Tipo de daño</th><th>Afectados</th><th>Estado</th><th>Acciones</th></tr>
+                    <tr>
+                        <th><a class="orden" th:href="${pagina.urlOrden('id')}">ID <span th:text="${pagina.flecha('id')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('sismo')}">Sismo <span th:text="${pagina.flecha('sismo')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('fecha')}">Fecha y hora <span th:text="${pagina.flecha('fecha')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('tipo')}">Tipo de daño <span th:text="${pagina.flecha('tipo')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('afectados')}">Afectados <span th:text="${pagina.flecha('afectados')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('estado')}">Estado <span th:text="${pagina.flecha('estado')}"></span></a></th>
+                        <th>Acciones</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr th:if="${#lists.isEmpty(reportes)}">
+                    <tr th:if="${#lists.isEmpty(pagina.items)}">
                         <td colspan="7" class="vacio">No se encontraron reportes de daño.</td>
                     </tr>
-                    <tr th:each="r : ${reportes}">
+                    <tr th:each="r : ${pagina.items}">
                         <td th:text="${r.id}"></td>
                         <td th:text="${r.evento.codigo}"></td>
                         <td th:text="${r.fechaHora}"></td>
@@ -99,6 +110,7 @@
                 </tbody>
             </table>
         </div>
+        <div th:replace="~{fragments/paginacion :: barra(${pagina})}"></div>
     </section>
 </main>
 </body>

@@ -1,7 +1,8 @@
 package pe.edu.cssp.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,8 @@ import pe.edu.cssp.entity.ReporteDano;
 import pe.edu.cssp.service.ReporteDanoService;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.ReporteDanoForm;
+import pe.edu.cssp.web.paginacion.PaginaVista;
+import pe.edu.cssp.web.paginacion.Paginacion;
 import java.time.format.DateTimeFormatter;
 
 @Controller
@@ -20,11 +23,25 @@ public class ReporteDanoController {
     private final ReporteDanoService reporteDanoService;
     public ReporteDanoController(ReporteDanoService reporteDanoService) { this.reporteDanoService = reporteDanoService; }
 
+    /** Columna pública -> propiedades de la consulta (e = sismo, t = tipo de daño, sin prefijo = reporte). */
+    private static final Map<String, String> ORDEN = Map.of(
+            "id", "id",
+            "sismo", "e.codigo,id",
+            "fecha", "fechaHora,id",
+            "tipo", "t.nombre,id",
+            "afectados", "cantidadAfectada,id",
+            "estado", "estado,id");
+
     @GetMapping
-    public String listar(@RequestParam(required = false) Integer eventoId, Model model) {
-        List<ReporteDano> reportes = reporteDanoService.listar(eventoId);
-        model.addAttribute("reportes", reportes);
-        model.addAttribute("totalAfectados", reporteDanoService.totalAfectados(reportes));
+    public String listar(@RequestParam(required = false) Integer eventoId,
+                         @RequestParam(required = false) Integer pagina,
+                         @RequestParam(required = false) Integer tamano,
+                         @RequestParam(required = false) String orden,
+                         @RequestParam(required = false) String dir,
+                         HttpServletRequest request, Model model) {
+        Paginacion.Pedido pedido = Paginacion.pedido(pagina, tamano, orden, dir, ORDEN, "id", "desc");
+        model.addAttribute("pagina", new PaginaVista<>(reporteDanoService.buscar(eventoId, pedido.pageable()), pedido, request));
+        model.addAttribute("totalAfectados", reporteDanoService.totalAfectadosDe(eventoId));
         model.addAttribute("eventos", reporteDanoService.todosLosEventos());
         model.addAttribute("eventoId", eventoId);
         return "reportesdano/lista";

@@ -27,7 +27,9 @@ public class ResultadoImportacion {
 
     private final TipoCatalogo catalogo;
     private final String archivo;
+    private static final int LIMITE_DETALLE_COMPLETO = 200;
     private final List<Linea> lineas = new ArrayList<>();
+    private int ignoradas;
 
     public ResultadoImportacion(TipoCatalogo catalogo, String archivo) {
         this.catalogo = catalogo;
@@ -37,6 +39,18 @@ public class ResultadoImportacion {
     public void agregar(int numero, String codigo, Estado estado, String mensaje) {
         lineas.add(new Linea(numero, codigo, estado, mensaje));
     }
+
+    /** Fila vacía o nota al pie que no es un registro: no cuenta como leída. */
+    public void ignorar() { ignoradas++; }
+
+    /** En archivos grandes el detalle solo lista lo que cambió o falló; las omitidas quedan en el resumen. */
+    public List<Linea> getLineasMostradas() {
+        if (lineas.size() <= LIMITE_DETALLE_COMPLETO) return lineas;
+        return lineas.stream().filter(l -> l.getEstado() != Estado.OMITIDA).toList();
+    }
+
+    public boolean isDetalleReducido() { return lineas.size() > LIMITE_DETALLE_COMPLETO; }
+    public int getIgnoradas() { return ignoradas; }
 
     public TipoCatalogo getCatalogo() { return catalogo; }
     public String getArchivo() { return archivo; }

@@ -34,6 +34,10 @@ public class Estacion {
     @JoinColumn(name = "ubicacion_id", nullable = false)
     private Ubicacion ubicacion;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "distrito_id")
+    private Distrito distrito;
+
     @Column(name = "latitud", nullable = false, precision = 9, scale = 6)
     private BigDecimal latitud;
 
@@ -105,7 +109,15 @@ public class Estacion {
         this.nombre = nombre;
     }
     
-    public Ubicacion getUbicacion() { 
+    public Distrito getDistrito() {
+        return distrito;
+    }
+
+    public void setDistrito(Distrito distrito) {
+        this.distrito = distrito;
+    }
+
+    public Ubicacion getUbicacion() {
         return ubicacion; 
     }
     

@@ -18,6 +18,8 @@ public class EstacionForm {
     @NotNull(message = "Seleccione una ubicación.")
     @UbicacionActiva
     private Integer ubicacionId;
+    /** Opcional: si se elige, debe ser un distrito activo del departamento de la ubicación. */
+    private Integer distritoId;
     @NotNull(message = "La latitud es obligatoria.")
     @DecimalMin(value = "-90.0", message = "Latitud mínima: -90.")
     @DecimalMax(value = "90.0", message = "Latitud máxima: 90.")
@@ -57,6 +59,14 @@ public class EstacionForm {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Integer getDistritoId() {
+        return distritoId;
+    }
+
+    public void setDistritoId(Integer distritoId) {
+        this.distritoId = distritoId;
     }
 
     public Integer getUbicacionId() {

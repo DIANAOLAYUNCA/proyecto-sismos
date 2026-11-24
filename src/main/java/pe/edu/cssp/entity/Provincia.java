@@ -26,7 +26,7 @@ public class Provincia {
     @JoinColumn(name = "departamento_id", nullable = false)
     private Departamento departamento;
     
-    @Column(name = "nombre", unique = true, nullable = false, length = 100)
+    @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
     
     @Column(name = "codigo", length = 10)

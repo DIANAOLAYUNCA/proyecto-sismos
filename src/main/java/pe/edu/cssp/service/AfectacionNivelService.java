@@ -2,6 +2,8 @@ package pe.edu.cssp.service;
 
 import java.util.List;
 import java.util.Locale;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.AfectacionNivel;
@@ -29,6 +31,9 @@ public class AfectacionNivelService {
 
     @Transactional(readOnly = true)
     public List<AfectacionNivel> listar() { return afectacionNivelRepository.findAllByOrderByIdAsc(); }
+
+    @Transactional(readOnly = true)
+    public Page<AfectacionNivel> listar(Pageable pageable) { return afectacionNivelRepository.findAll(pageable); }
 
     @Transactional(readOnly = true)
     public AfectacionNivel buscarPorId(int id) {

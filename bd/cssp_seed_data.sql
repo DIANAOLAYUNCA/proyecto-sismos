@@ -7,33 +7,33 @@ USE cssp_sismos;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ============================================================
--- Rol 
+-- Datos: Roles
 -- ============================================================
-INSERT INTO Rol (id, nombre, codigo, creacion_fecha, creacion_usuario, actualizacion_fecha, actualizacion_usuario) VALUES
-(1, 'Administrador', 'ADMIN', NOW(), 'sistema', NULL, NULL),
-(2, 'Analista', 'ANALISTA', NOW(), 'sistema', NULL, NULL),
-(3, 'Operador', 'OPERADOR', NOW(), 'sistema', NULL, NULL),
-(4, 'Consulta', 'CONSULTA', NOW(), 'sistema', NULL, NULL);
+INSERT INTO Rol (id, nombre, codigo, creacion_fecha, creacion_usuario) VALUES
+(1, 'Administrador', 'ADMIN',    NOW(), 'sistema'),
+(2, 'Analista',      'ANALISTA', NOW(), 'sistema'),
+(3, 'Operador',      'OPERADOR', NOW(), 'sistema'),
+(4, 'Consulta',      'CONSULTA', NOW(), 'sistema');
 
 -- ============================================================
--- Modulo
+-- Datos: Módulos
 -- ============================================================
 INSERT INTO Modulo (id, nombre, codigo, creacion_fecha, creacion_usuario) VALUES
-(1, 'Evento',       'EVENTO',       NOW(), 'sistema'),
-(2, 'Estacion',     'ESTACION',     NOW(), 'sistema'),
-(3, 'Reporte',      'REPORTE',      NOW(), 'sistema'),
-(4, 'Seguimiento',  'SEGUIMIENTO',  NOW(), 'sistema'),
-(5, 'Usuario',      'USUARIO',      NOW(), 'sistema'),
-(6, 'Dashboard',    'DASHBOARD',    NOW(), 'sistema'),
-(7, 'Importacion',  'IMPORTACION',  NOW(), 'sistema');
+(1, 'Evento',      'EVENTO',      NOW(), 'sistema'),
+(2, 'Estacion',    'ESTACION',    NOW(), 'sistema'),
+(3, 'Reporte',     'REPORTE',     NOW(), 'sistema'),
+(4, 'Seguimiento', 'SEGUIMIENTO', NOW(), 'sistema'),
+(5, 'Usuario',     'USUARIO',     NOW(), 'sistema'),
+(6, 'Dashboard',   'DASHBOARD',   NOW(), 'sistema'),
+(7, 'Importacion', 'IMPORTACION', NOW(), 'sistema');
 
 -- ============================================================
--- Datos: Rol_Modulo_Permiso
+-- Datos: Permisos por Rol y Módulo
 -- Rol 1 = Administrador | Rol 2 = Analista | Rol 3 = Operador | Rol 4 = Consulta
 -- Modulo 1=Evento 2=Estacion 3=Reporte 4=Seguimiento 5=Usuario 6=Dashboard 7=Importacion
 -- ============================================================
 INSERT INTO Rol_Modulo_Permiso (rol_id, modulo_id, puede_crear, puede_leer, puede_actualizar, puede_eliminar, creacion_fecha, creacion_usuario) VALUES
--- Administrador: acceso completo a todos los módulos
+-- 1: ADMIN
 (1, 1, TRUE,  TRUE,  TRUE,  TRUE,  NOW(), 'sistema'),
 (1, 2, TRUE,  TRUE,  TRUE,  TRUE,  NOW(), 'sistema'),
 (1, 3, TRUE,  TRUE,  TRUE,  TRUE,  NOW(), 'sistema'),
@@ -41,8 +41,7 @@ INSERT INTO Rol_Modulo_Permiso (rol_id, modulo_id, puede_crear, puede_leer, pued
 (1, 5, TRUE,  TRUE,  TRUE,  TRUE,  NOW(), 'sistema'),
 (1, 6, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
 (1, 7, TRUE,  TRUE,  TRUE,  TRUE,  NOW(), 'sistema'),
- 
--- Analista: consulta sismos, actualiza seguimientos, consulta reportes, ve dashboard
+-- 2: ANALISTA
 (2, 1, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
 (2, 2, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
 (2, 3, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
@@ -50,8 +49,7 @@ INSERT INTO Rol_Modulo_Permiso (rol_id, modulo_id, puede_crear, puede_leer, pued
 (2, 5, FALSE, FALSE, FALSE, FALSE, NOW(), 'sistema'),
 (2, 6, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
 (2, 7, FALSE, FALSE, FALSE, FALSE, NOW(), 'sistema'),
- 
--- Operador: registra sismos y afectaciones, actualiza información autorizada
+-- 3: OPERADOR
 (3, 1, TRUE,  TRUE,  TRUE,  FALSE, NOW(), 'sistema'),
 (3, 2, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
 (3, 3, TRUE,  TRUE,  TRUE,  FALSE, NOW(), 'sistema'),
@@ -59,8 +57,7 @@ INSERT INTO Rol_Modulo_Permiso (rol_id, modulo_id, puede_crear, puede_leer, pued
 (3, 5, FALSE, FALSE, FALSE, FALSE, NOW(), 'sistema'),
 (3, 6, FALSE, FALSE, FALSE, FALSE, NOW(), 'sistema'),
 (3, 7, TRUE,  TRUE,  FALSE, FALSE, NOW(), 'sistema'),
- 
--- Consulta: solo puede visualizar información
+-- 4: CONSULTA
 (4, 1, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
 (4, 2, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
 (4, 3, FALSE, TRUE,  FALSE, FALSE, NOW(), 'sistema'),
@@ -70,14 +67,19 @@ INSERT INTO Rol_Modulo_Permiso (rol_id, modulo_id, puede_crear, puede_leer, pued
 (4, 7, FALSE, FALSE, FALSE, FALSE, NOW(), 'sistema');
 
 -- ============================================================
--- NOTA: password_hash es un valor de ejemplo, reemplazar por un
--- hash real (bcrypt/argon2) generado por la aplicación.
+-- Datos: 10 Usuarios (Contraseña para todos: 123456)
 -- ============================================================
-INSERT INTO Usuario (id, nombres, apellidos, email, username, password_hash, rol_id, estado, creacion_fecha, creacion_usuario, actualizacion_fecha, actualizacion_usuario) VALUES
-(1, 'Andrea', 'Ramírez', 'admin@cssp.gob.pe', 'aramirez', '$2y$10$examplehash.admin.0000000000000000', 1, 'ACTIVO', NOW(), 'sistema', NULL, NULL),
-(2, 'Julio', 'Pérez', 'analista@cssp.gob.pe', 'jperez', '$2y$10$examplehash.analista.000000000000', 2, 'ACTIVO', NOW(), 'sistema', NULL, NULL),
-(3, 'Lucía', 'Mendoza', 'operador@cssp.gob.pe', 'lmendoza', '$2y$10$examplehash.operador.000000000000', 3, 'ACTIVO', NOW(), 'sistema', NULL, NULL),
-(4, 'Invitado', 'CSSP', 'consulta@cssp.gob.pe', 'invitado', '$2y$10$examplehash.consulta.000000000000', 4, 'ACTIVO', NOW(), 'sistema', NULL, NULL);
+INSERT INTO Usuario (id, nombres, apellidos, email, username, password_hash, rol_id, estado, creacion_fecha, creacion_usuario) VALUES
+(1,  'Andrea',  'Ramírez',  'aramirez@cssp.gob.pe',  'aramirez',  '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 1, 'ACTIVO',   NOW(), 'sistema'),
+(2,  'Carlos',  'Mendoza',  'cmendoza@cssp.gob.pe',  'cmendoza',  '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 1, 'ACTIVO',   NOW(), 'sistema'),
+(3,  'Julio',   'Pérez',    'jperez@cssp.gob.pe',    'jperez',    '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 2, 'ACTIVO',   NOW(), 'sistema'),
+(4,  'María',   'Flores',   'mflores@cssp.gob.pe',   'mflores',   '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 2, 'ACTIVO',   NOW(), 'sistema'),
+(5,  'Ricardo', 'Torres',   'rtorres@cssp.gob.pe',   'rtorres',   '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 2, 'ACTIVO',   NOW(), 'sistema'),
+(6,  'Lucía',   'Mendoza',  'lmendoza@cssp.gob.pe',  'lmendoza',  '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 3, 'ACTIVO',   NOW(), 'sistema'),
+(7,  'Diego',   'Quispe',   'dquispe@cssp.gob.pe',   'dquispe',   '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 3, 'ACTIVO',   NOW(), 'sistema'),
+(8,  'Sofía',   'Vargas',   'svargas@cssp.gob.pe',   'svargas',   '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 3, 'ACTIVO',   NOW(), 'sistema'),
+(9,  'Invitado','CSSP',     'invitado@cssp.gob.pe',  'invitado',  '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 4, 'ACTIVO',   NOW(), 'sistema'),
+(10, 'Jorge',   'Castillo', 'jcastillo@cssp.gob.pe', 'jcastillo', '$2a$10$gLAukNvpcfLDcHHiRSw.d.6.T4EiUsyuGf2FstiSe5wHprNy.tSVe', 4, 'INACTIVO', NOW(), 'sistema');
 
 -- ============================================================
 -- Departamento (25 registros - UBIGEO INEI)
@@ -2410,7 +2412,17 @@ INSERT INTO Estacion (id, codigo, nombre, ubicacion_id, latitud, longitud, insta
 -- ============================================================
 INSERT INTO Evento (id, estacion_id, codigo, fecha_hora, magnitud, profundidad, latitud, longitud, referencia, ubicacion_id, tipo_alerta_id, afectacion_nivel_id, estado, creacion_fecha, creacion_usuario, actualizacion_fecha, actualizacion_usuario) VALUES
 (1, 1, 'SIS-2026-0001', '2026-08-18 14:32:00', 5.60, 34.00, -16.409000, -71.537500, 'Cercanías de la ciudad de Arequipa', 4, 2, 2, 'EN_SEGUIMIENTO', NOW(), 'operador', NULL, NULL),
-(2, 2, 'SIS-2026-0002', '2026-09-02 03:10:00', 4.20, 60.00, -13.532000, -71.967500, 'Cercanías de la ciudad del Cusco', 8, 1, 1, 'REGISTRADO', NOW(), 'operador', NULL, NULL);
+(2, 2, 'SIS-2026-0002', '2026-09-02 03:10:00', 4.20, 60.00, -13.532000, -71.967500, 'Cercanías de la ciudad del Cusco', 8, 1, 1, 'REGISTRADO', NOW(), 'operador', NULL, NULL),
+(3,1,'SIS-2026-0003','2026-09-05 01:18:00',4.10,42.00,-16.120000,-72.480000,'A 38 km al suroeste de Camaná, Arequipa',4,1,1,'REGISTRADO',NOW(),'operador',NULL,NULL),
+(4,2,'SIS-2026-0004','2026-09-09 06:42:00',4.50,78.00,-15.620000,-71.820000,'A 24 km al norte de Chivay, Arequipa',4,2,2,'EN_SEGUIMIENTO',NOW(),'operador',NULL,NULL),
+(5,1,'SIS-2026-0005','2026-09-14 11:07:00',3.80,35.00,-16.350000,-71.520000,'A 12 km al noreste de Arequipa, Arequipa',4,1,1,'REGISTRADO',NOW(),'operador',NULL,NULL),
+(6,2,'SIS-2026-0006','2026-09-27 18:26:00',4.30,51.00,-13.740000,-71.980000,'A 27 km al sureste de Cusco, Cusco',8,2,2,'EN_SEGUIMIENTO',NOW(),'operador',NULL,NULL),
+(7,1,'SIS-2026-0007','2026-10-03 02:14:00',4.00,39.00,-16.780000,-72.120000,'A 29 km al sur de Mollendo, Arequipa',4,1,1,'REGISTRADO',NOW(),'operador',NULL,NULL),
+(8,2,'SIS-2026-0008','2026-10-12 15:48:00',4.60,92.00,-13.210000,-72.050000,'A 18 km al noreste de Anta, Cusco',8,2,2,'EN_SEGUIMIENTO',NOW(),'operador',NULL,NULL),
+(9,1,'SIS-2026-0009','2026-10-26 20:39:00',4.40,58.00,-16.250000,-71.650000,'A 20 km al este de Yura, Arequipa',4,1,1,'REGISTRADO',NOW(),'operador',NULL,NULL),
+(10,2,'SIS-2026-0010','2026-11-19 03:22:00',4.20,44.00,-13.880000,-71.650000,'A 35 km al oeste de Urcos, Cusco',8,1,1,'REGISTRADO',NOW(),'operador',NULL,NULL),
+(11,1,'SIS-2026-0011','2026-11-20 08:11:00',4.80,73.00,-16.350000,-73.050000,'A 35 km al oeste de Atico, Arequipa',4,2,2,'EN_SEGUIMIENTO',NOW(),'operador',NULL,NULL),
+(12,2,'SIS-2026-0012','2026-11-21 12:34:00',5.10,96.00,-13.520000,-71.850000,'A 15 km al suroeste de Cusco, Cusco',8,3,3,'EN_SEGUIMIENTO',NOW(),'operador',NULL,NULL);
 
 -- ============================================================
 -- Seguimiento (línea de tiempo de seguimiento del Evento 1)
@@ -2456,4 +2468,4 @@ INSERT INTO Importacion_Historico (id, usuario_id, nombre_archivo, fecha_inicio,
 (1, 1, 'historico_sismos_2025.csv', '2026-01-15 08:00:00', '2026-01-15 08:04:32', 50000, 50000, 0, 'COMPLETADO', NULL, NOW(), 'admin', NULL, NULL),
 (2, 1, 'historico_sismos_2024.csv', '2026-01-16 09:00:00', NULL, 32000, 18500, 12, 'EN_PROCESO', 'Fila 245: magnitud inválida; Fila 812: fecha futura', NOW(), 'admin', NULL, NULL);
 
-SET FOREIGN_KEY_CHECKS = 1;
+SET FOREIGN_KEY_CHECKS = 1;

@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.AfectacionNivel;
+import pe.edu.cssp.entity.Distrito;
 import pe.edu.cssp.entity.Estacion;
 import pe.edu.cssp.entity.Evento;
 import pe.edu.cssp.entity.TipoAlerta;
@@ -28,16 +29,21 @@ public class EventoService {
     private final UbicacionRepository ubicacionRepository;
     private final AfectacionNivelRepository afectacionNivelRepository;
     private final TipoAlertaRepository tipoAlertaRepository;
+    private final DistritoService distritoService;
 
     public EventoService(EventoRepository eventoRepository, EstacionRepository estacionRepository,
                          UbicacionRepository ubicacionRepository, AfectacionNivelRepository afectacionNivelRepository,
-                         TipoAlertaRepository tipoAlertaRepository) {
+                         TipoAlertaRepository tipoAlertaRepository, DistritoService distritoService) {
         this.eventoRepository = eventoRepository;
         this.estacionRepository = estacionRepository;
         this.ubicacionRepository = ubicacionRepository;
         this.afectacionNivelRepository = afectacionNivelRepository;
         this.tipoAlertaRepository = tipoAlertaRepository;
+        this.distritoService = distritoService;
     }
+
+    @Transactional(readOnly = true)
+    public List<Distrito> distritosDisponibles(Integer ubicacionId) { return distritoService.opcionesPorUbicacion(ubicacionId); }
 
     @Transactional(readOnly = true)
     public List<Evento> listar(String codigo, String fecha, Double magnitudMinima, String estado, Integer ubicacionId) {
@@ -128,6 +134,7 @@ public class EventoService {
         evento.setLongitud(form.getLongitud().doubleValue());
         evento.setReferencia(form.getReferencia().trim());
         evento.setUbicacion(ubicacion);
+        evento.setDistrito(distritoService.elegir(form.getDistritoId(), ubicacion, evento.getDistrito()));
         evento.setTipoAlerta(alerta);
         evento.setAfectacionNivel(nivel);
         evento.setEstado(form.getEstado());

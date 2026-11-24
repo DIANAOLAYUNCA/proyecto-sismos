@@ -42,6 +42,8 @@ public class EventoForm {
     @NotNull(message = "Seleccione una ubicación.")
     @UbicacionActiva
     private Integer ubicacionId;
+    /** Opcional: si se elige, debe ser un distrito activo del departamento de la ubicación. */
+    private Integer distritoId;
     @NotNull(message = "Seleccione un tipo de alerta.")
     @TipoAlertaActiva
     private Integer tipoAlertaId;
@@ -121,6 +123,14 @@ public class EventoForm {
 
     public void setReferencia(String referencia) {
         this.referencia = referencia;
+    }
+
+    public Integer getDistritoId() {
+        return distritoId;
+    }
+
+    public void setDistritoId(Integer distritoId) {
+        this.distritoId = distritoId;
     }
 
     public Integer getUbicacionId() {

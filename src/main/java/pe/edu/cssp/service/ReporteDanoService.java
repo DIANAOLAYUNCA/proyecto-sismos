@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.AfectacionNivel;
@@ -42,6 +44,17 @@ public class ReporteDanoService {
     @Transactional(readOnly = true)
     public List<ReporteDano> listar(Integer eventoId) {
         return eventoId == null ? reporteDanoRepository.listar() : reporteDanoRepository.listarPorEvento(eventoId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReporteDano> buscar(Integer eventoId, Pageable pageable) {
+        return reporteDanoRepository.buscar(eventoId == null ? 0 : eventoId, pageable);
+    }
+
+    /** Suma sobre todos los reportes del filtro (no solo los de la página que se ve), sin contar los descartados. */
+    @Transactional(readOnly = true)
+    public long totalAfectadosDe(Integer eventoId) {
+        return reporteDanoRepository.sumaAfectados(eventoId == null ? 0 : eventoId);
     }
 
     public int totalAfectados(List<ReporteDano> reportes) {

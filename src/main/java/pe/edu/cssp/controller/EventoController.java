@@ -76,6 +76,7 @@ public class EventoController {
         f.setLongitud(BigDecimal.valueOf(e.getLongitud()));
         f.setReferencia(e.getReferencia());
         f.setUbicacionId(e.getUbicacion().getId());
+        if (e.getDistrito() != null) f.setDistritoId(e.getDistrito().getId());
         f.setTipoAlertaId(e.getTipoAlerta().getId());
         if (e.getAfectacionNivel() != null) f.setAfectacionNivelId(e.getAfectacionNivel().getId());
         f.setEstado(e.getEstado());
@@ -119,6 +120,7 @@ public class EventoController {
         model.addAttribute("eventoId", id);
         model.addAttribute("estaciones", eventoService.estaciones());
         model.addAttribute("ubicaciones", eventoService.ubicacionesActivas());
+        model.addAttribute("distritos", eventoService.distritosDisponibles(form.getUbicacionId()));
         model.addAttribute("alertas", eventoService.alertasActivas());
         model.addAttribute("niveles", eventoService.niveles());
     }
