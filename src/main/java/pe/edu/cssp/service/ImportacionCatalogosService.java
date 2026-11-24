@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -13,9 +14,15 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pe.edu.cssp.entity.Departamento;
+import pe.edu.cssp.entity.Distrito;
+import pe.edu.cssp.entity.Provincia;
 import pe.edu.cssp.entity.TipoAlerta;
 import pe.edu.cssp.entity.TipoDano;
 import pe.edu.cssp.entity.Ubicacion;
+import pe.edu.cssp.repository.DepartamentoRepository;
+import pe.edu.cssp.repository.DistritoRepository;
+import pe.edu.cssp.repository.ProvinciaRepository;
 import pe.edu.cssp.repository.TipoAlertaRepository;
 import pe.edu.cssp.repository.TipoDanoRepository;
 import pe.edu.cssp.repository.UbicacionRepository;
@@ -37,13 +44,22 @@ public class ImportacionCatalogosService {
     private final UbicacionRepository ubicacionRepository;
     private final TipoAlertaRepository tipoAlertaRepository;
     private final TipoDanoRepository tipoDanoRepository;
+    private final DepartamentoRepository departamentoRepository;
+    private final ProvinciaRepository provinciaRepository;
+    private final DistritoRepository distritoRepository;
 
     public ImportacionCatalogosService(UbicacionRepository ubicacionRepository,
                                        TipoAlertaRepository tipoAlertaRepository,
-                                       TipoDanoRepository tipoDanoRepository) {
+                                       TipoDanoRepository tipoDanoRepository,
+                                       DepartamentoRepository departamentoRepository,
+                                       ProvinciaRepository provinciaRepository,
+                                       DistritoRepository distritoRepository) {
         this.ubicacionRepository = ubicacionRepository;
         this.tipoAlertaRepository = tipoAlertaRepository;
         this.tipoDanoRepository = tipoDanoRepository;
+        this.departamentoRepository = departamentoRepository;
+        this.provinciaRepository = provinciaRepository;
+        this.distritoRepository = distritoRepository;
     }
 
     @Transactional
@@ -63,7 +79,7 @@ public class ImportacionCatalogosService {
     public ResultadoImportacion importar(TipoCatalogo tipo, String nombreArchivo, InputStream csv) {
         CsvLector.Contenido contenido;
         try {
-            contenido = CsvLector.leer(csv);
+            contenido = CsvLector.leer(csv, tipo.getSeparador(), tipo.isFormatoInei());
         } catch (IOException ex) {
             throw new ReglaNegocioException("No se pudo leer el archivo.");
         }
@@ -76,8 +92,18 @@ public class ImportacionCatalogosService {
                     this::validarTipoAlerta, this::crearTipoAlerta, tipoAlertaRepository::saveAll);
             case TIPO_DANO -> procesar(resultado, contenido, posiciones, existentes(tipoDanoRepository.findAll(), TipoDano::getCodigo),
                     this::validarTipoDano, this::crearTipoDano, tipoDanoRepository::saveAll);
+            case DISTRITOS -> importarDistritos(resultado, contenido, posiciones);
         }
         return resultado;
+    }
+
+    private void importarDistritos(ResultadoImportacion resultado, CsvLector.Contenido contenido, Map<String, Integer> posiciones) {
+        Map<String, Departamento> departamentos = new HashMap<>();
+        departamentoRepository.findAll().forEach(d -> departamentos.put(d.getCodigo(), d));
+        Map<String, Provincia> provincias = new HashMap<>();
+        provinciaRepository.findAll().forEach(p -> provincias.put(p.getDepartamento().getCodigo() + p.getCodigo(), p));
+        procesar(resultado, contenido, posiciones, existentes(distritoRepository.codigosUbigeo(), codigo -> codigo),
+                this::validarDistrito, c -> crearDistrito(c, departamentos, provincias), distritoRepository::saveAll);
     }
 
     private <T> Set<String> existentes(List<T> registros, Function<T, String> codigo) {
@@ -94,6 +120,11 @@ public class ImportacionCatalogosService {
         for (CsvLector.Fila fila : contenido.getFilas()) {
             Map<String, String> campos = campos(posiciones, fila);
             String codigo = campos.get("codigo");
+            if (resultado.getCatalogo().isFormatoInei() && resultado.getCatalogo().getColumnas().stream()
+                    .allMatch(columna -> campos.getOrDefault(columna, "").isBlank())) {
+                resultado.ignorar();
+                continue;
+            }
             if (fila.getValores().size() != contenido.getEncabezados().size()) {
                 resultado.agregar(fila.getLinea(), codigo, Estado.RECHAZADA, "Se esperaban " + contenido.getEncabezados().size()
                         + " columnas y la fila tiene " + fila.getValores().size() + ".");
@@ -134,6 +165,7 @@ public class ImportacionCatalogosService {
         Map<String, String> campos = new java.util.HashMap<>();
         posiciones.forEach((nombre, indice) ->
                 campos.put(nombre, indice < fila.getValores().size() ? fila.getValores().get(indice) : ""));
+        if (campos.containsKey("iddist")) campos.put("codigo", campos.get("iddist"));
         return campos;
     }
 
@@ -169,6 +201,60 @@ public class ImportacionCatalogosService {
         if (c.get("estado").isBlank()) errores.add("El estado es obligatorio.");
         else enumerado(c, "estado", ESTADOS, "El estado no es válido (ACTIVO o INACTIVO).", errores);
         return errores;
+    }
+
+    private List<String> validarDistrito(Map<String, String> c) {
+        List<String> errores = new ArrayList<>();
+        if (!c.get("iddist").matches("\\d{6}")) errores.add("El código ubigeo (IDDIST) debe tener 6 dígitos.");
+        textoObligatorio(c, "nombdep", "El departamento", errores);
+        textoObligatorio(c, "nombprov", "La provincia", errores);
+        textoObligatorio(c, "nombdist", "El distrito", errores);
+        return errores;
+    }
+
+    private void textoObligatorio(Map<String, String> c, String campo, String etiqueta, List<String> errores) {
+        String valor = c.get(campo);
+        if (valor.isBlank()) errores.add(etiqueta + " es obligatorio.");
+        else if (valor.length() > 100) errores.add(etiqueta + " supera los 100 caracteres.");
+    }
+
+    private Distrito crearDistrito(Map<String, String> c, Map<String, Departamento> departamentos, Map<String, Provincia> provincias) {
+        String ubigeo = c.get("iddist");
+        String codigoDepartamento = ubigeo.substring(0, 2);
+        String codigoProvincia = ubigeo.substring(0, 4);
+        Departamento departamento = departamentos.computeIfAbsent(codigoDepartamento, codigo -> {
+            Departamento nuevo = new Departamento();
+            nuevo.setCodigo(codigo);
+            nuevo.setNombre(titulo(c.get("nombdep")));
+            auditoria(nuevo::setCreacionFecha, nuevo::setCreacionUsuario);
+            return departamentoRepository.save(nuevo);
+        });
+        Provincia provincia = provincias.computeIfAbsent(codigoProvincia, codigo -> {
+            Provincia nueva = new Provincia();
+            nueva.setCodigo(codigo.substring(2));
+            nueva.setNombre(titulo(c.get("nombprov")));
+            nueva.setDepartamento(departamento);
+            auditoria(nueva::setCreacionFecha, nueva::setCreacionUsuario);
+            return provinciaRepository.save(nueva);
+        });
+        Distrito distrito = new Distrito();
+        distrito.setCodigo(ubigeo.substring(4));
+        distrito.setNombre(titulo(c.get("nombdist")));
+        distrito.setProvincia(provincia);
+        auditoria(distrito::setCreacionFecha, distrito::setCreacionUsuario);
+        return distrito;
+    }
+
+    /** El INEI publica los nombres en mayúsculas: "SAN JUAN DE LURIGANCHO" pasa a "San Juan de Lurigancho". */
+    static String titulo(String texto) {
+        StringBuilder resultado = new StringBuilder();
+        for (String palabra : texto.trim().toLowerCase(Locale.ROOT).split("\\s+")) {
+            if (resultado.length() > 0) resultado.append(' ');
+            boolean conector = Set.of("de", "del", "la", "las", "los", "el", "y", "e").contains(palabra);
+            if (conector && resultado.length() > 0) resultado.append(palabra);
+            else if (!palabra.isEmpty()) resultado.append(Character.toUpperCase(palabra.charAt(0))).append(palabra.substring(1));
+        }
+        return resultado.toString();
     }
 
     private void codigo(Map<String, String> c, int maximo, List<String> errores) {

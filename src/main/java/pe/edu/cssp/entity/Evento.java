@@ -75,6 +75,10 @@ public class Evento {
     @JoinColumn(name = "tipo_alerta_id", nullable = false)
     private TipoAlerta tipoAlerta;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "distrito_id")
+    private Distrito distrito;
+
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seguimiento> seguimientos = new ArrayList<>();
 
@@ -104,6 +108,14 @@ public class Evento {
         this.creacionUsuario = creacionUsuario;
         this.actualizacionFecha = actualizacionFecha;
         this.actualizacionUsuario = actualizacionUsuario;
+    }
+
+    public Distrito getDistrito() {
+        return distrito;
+    }
+
+    public void setDistrito(Distrito distrito) {
+        this.distrito = distrito;
     }
 
     public List<Seguimiento> getSeguimientos() {

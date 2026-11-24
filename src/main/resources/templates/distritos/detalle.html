@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de distrito | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Ubigeo INEI</span>
+        <h1>Detalle del distrito</h1>
+    </header>
+    <div class="alerta alerta-exito" th:if="${exito}" th:text="${exito}"></div>
+    <section class="tarjeta detalle">
+        <dl>
+            <div><dt>ID</dt><dd th:text="${distrito.id}"></dd></div>
+            <div><dt>Ubigeo</dt><dd th:text="${distrito.ubigeo}"></dd></div>
+            <div><dt>Departamento</dt><dd th:text="${distrito.provincia.departamento.nombre}"></dd></div>
+            <div><dt>Provincia</dt><dd th:text="${distrito.provincia.nombre}"></dd></div>
+            <div><dt>Distrito</dt><dd th:text="${distrito.nombre}"></dd></div>
+            <div><dt>Estado</dt><dd th:text="${distrito.estado}"></dd></div>
+            <div><dt>Fecha de creación</dt><dd th:text="${distrito.creacionFecha}"></dd></div>
+            <div><dt>Usuario de creación</dt><dd th:text="${distrito.creacionUsuario}"></dd></div>
+            <div><dt>Fecha de actualización</dt><dd th:text="${distrito.actualizacionFecha}"></dd></div>
+            <div><dt>Usuario de actualización</dt><dd th:text="${distrito.actualizacionUsuario}"></dd></div>
+        </dl>
+    </section>
+    <nav class="acciones">
+        <a class="boton" th:href="@{/distritos/{id}/editar(id=${distrito.id})}">Editar</a>
+        <a class="enlace-peligro" th:if="${distrito.estado == 'ACTIVO'}" th:href="@{/distritos/{id}/eliminar(id=${distrito.id})}">Eliminar</a>
+        <a th:href="@{/distritos}">Volver a la lista</a>
+    </nav>
+</main>
+</body>
+</html>

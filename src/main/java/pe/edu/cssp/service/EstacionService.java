@@ -8,6 +8,7 @@ import java.util.Locale;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.Estacion;
+import pe.edu.cssp.entity.Distrito;
 import pe.edu.cssp.entity.Ubicacion;
 import pe.edu.cssp.repository.EstacionRepository;
 import pe.edu.cssp.repository.UbicacionRepository;
@@ -19,11 +20,17 @@ import pe.edu.cssp.web.form.EstacionForm;
 public class EstacionService {
     private final EstacionRepository estacionRepository;
     private final UbicacionRepository ubicacionRepository;
+    private final DistritoService distritoService;
 
-    public EstacionService(EstacionRepository estacionRepository, UbicacionRepository ubicacionRepository) {
+    public EstacionService(EstacionRepository estacionRepository, UbicacionRepository ubicacionRepository,
+                           DistritoService distritoService) {
         this.estacionRepository = estacionRepository;
         this.ubicacionRepository = ubicacionRepository;
+        this.distritoService = distritoService;
     }
+
+    @Transactional(readOnly = true)
+    public List<Distrito> distritosDisponibles(Integer ubicacionId) { return distritoService.opcionesPorUbicacion(ubicacionId); }
 
     @Transactional(readOnly = true)
     public List<Estacion> listar() { return estacionRepository.listar(); }
@@ -91,6 +98,7 @@ public class EstacionService {
         estacion.setCodigo(codigo);
         estacion.setNombre(form.getNombre().trim());
         estacion.setUbicacion(ubicacion);
+        estacion.setDistrito(distritoService.elegir(form.getDistritoId(), ubicacion, estacion.getDistrito()));
         estacion.setLatitud(form.getLatitud());
         estacion.setLongitud(form.getLongitud());
         estacion.setInstalacionFecha(instalacion);

@@ -57,6 +57,7 @@ public class EstacionController {
         f.setCodigo(e.getCodigo());
         f.setNombre(e.getNombre());
         f.setUbicacionId(e.getUbicacion().getId());
+        if (e.getDistrito() != null) f.setDistritoId(e.getDistrito().getId());
         f.setLatitud(e.getLatitud());
         f.setLongitud(e.getLongitud());
         f.setInstalacionFecha(e.getInstalacionFecha() != null ? e.getInstalacionFecha().toString() : null);
@@ -100,5 +101,6 @@ public class EstacionController {
         model.addAttribute("estacionForm", form);
         model.addAttribute("estacionId", id);
         model.addAttribute("ubicaciones", estacionService.ubicacionesActivas());
+        model.addAttribute("distritos", estacionService.distritosDisponibles(form.getUbicacionId()));
     }
 }

@@ -23,7 +23,7 @@ class PaginasTest extends BaseDatosTest {
 
     private void cargaConBarraYScript(String ruta) throws Exception {
         mvc.perform(get(ruta)).andExpect(status().isOk())
-                .andExpect(content().string(containsString("navbar-marca")))
+                .andExpect(content().string(containsString("navbar-cssp-marca")))
                 .andExpect(content().string(containsString("/js/app.js")))
                 .andExpect(content().string(containsString("/css/estilos.css")));
     }
@@ -44,6 +44,7 @@ class PaginasTest extends BaseDatosTest {
                 "/tipos-dano", "/tipos-dano/nuevo", "/tipos-dano/" + tipoDano.getId(), "/tipos-dano/" + tipoDano.getId() + "/editar", "/tipos-dano/" + tipoDano.getId() + "/eliminar",
                 "/afectacionniveles", "/afectacionniveles/nuevo",
                 "/reportes-dano", "/reportes-dano/nuevo",
+                "/distritos", "/distritos/nuevo",
                 "/importacion"));
         for (String ruta : rutas) cargaConBarraYScript(ruta);
     }
@@ -55,7 +56,7 @@ class PaginasTest extends BaseDatosTest {
 
     @Test
     void laBarraEnlazaConTodosLosModulos() throws Exception {
-        String[] enlaces = {"/eventos", "/reportes-dano", "/estaciones", "/ubicaciones", "/afectacionniveles",
+        String[] enlaces = {"/eventos", "/reportes-dano", "/estaciones", "/ubicaciones", "/distritos", "/afectacionniveles",
                 "/tipos-alerta", "/tipos-dano", "/importacion"};
         for (String enlace : enlaces) {
             mvc.perform(get("/afectacionniveles"))

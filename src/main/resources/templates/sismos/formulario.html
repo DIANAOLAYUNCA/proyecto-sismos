@@ -6,6 +6,7 @@
     <title>Sismo | CSSP</title>
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <script th:src="@{/js/app.js}" defer></script>
+    <script th:src="@{/js/distrito-dependiente.js}" defer></script>
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -61,6 +62,13 @@
                     <option th:each="u : ${ubicaciones}" th:value="${u.id}" th:text="${u.codigo + ' - ' + u.nombre}"></option>
                 </select>
                 <span class="mensaje-campo" th:errors="*{ubicacionId}"></span>
+            </label>
+            <label>Distrito (opcional)
+                <select th:field="*{distritoId}" th:errorclass="campo-invalido" th:attr="data-url=@{/distritos/por-ubicacion/}">
+                    <option value="" th:text="${#lists.isEmpty(distritos)} ? 'Seleccione primero la ubicación' : 'Sin distrito'">Sin distrito</option>
+                    <option th:each="d : ${distritos}" th:value="${d.id}" th:text="${d.provincia.nombre + ' - ' + d.nombre}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{distritoId}"></span>
             </label>
             <label>Tipo de alerta
                 <select th:field="*{tipoAlertaId}" th:errorclass="campo-invalido" required>

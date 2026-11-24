@@ -1,6 +1,8 @@
 package pe.edu.cssp.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,6 +12,8 @@ import pe.edu.cssp.entity.AfectacionNivel;
 import pe.edu.cssp.service.AfectacionNivelService;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.AfectacionNivelForm;
+import pe.edu.cssp.web.paginacion.PaginaVista;
+import pe.edu.cssp.web.paginacion.Paginacion;
 
 @Controller
 @RequestMapping("/afectacionniveles")
@@ -17,9 +21,20 @@ public class AfectacionNivelController {
     private final AfectacionNivelService afectacionNivelService;
     public AfectacionNivelController(AfectacionNivelService afectacionNivelService) { this.afectacionNivelService = afectacionNivelService; }
 
+    /** Columna pública -> propiedades de la consulta. */
+    private static final Map<String, String> ORDEN = Map.of(
+            "id", "id",
+            "codigo", "codigo,id",
+            "nombre", "nombre,id");
+
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("niveles", afectacionNivelService.listar());
+    public String listar(@RequestParam(required = false) Integer pagina,
+                         @RequestParam(required = false) Integer tamano,
+                         @RequestParam(required = false) String orden,
+                         @RequestParam(required = false) String dir,
+                         HttpServletRequest request, Model model) {
+        Paginacion.Pedido pedido = Paginacion.pedido(pagina, tamano, orden, dir, ORDEN, "id");
+        model.addAttribute("pagina", new PaginaVista<>(afectacionNivelService.listar(pedido.pageable()), pedido, request));
         return "afectacionniveles/lista";
     }
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -33,7 +34,12 @@ public final class CsvLector {
     }
 
     public static Contenido leer(InputStream entrada) throws IOException {
-        String texto = decodificar(entrada.readAllBytes());
+        return leer(entrada, ',', false);
+    }
+
+    /** aceptaWindows1252: si el archivo no es UTF-8 válido se lee como Windows-1252 (Excel) en vez de rechazarlo. */
+    public static Contenido leer(InputStream entrada, char separador, boolean aceptaWindows1252) throws IOException {
+        String texto = decodificar(entrada.readAllBytes(), aceptaWindows1252);
         if (!texto.isEmpty() && texto.charAt(0) == '﻿') texto = texto.substring(1);
 
         List<String> encabezados = null;
@@ -42,7 +48,7 @@ public final class CsvLector {
         for (String linea : texto.split("\r\n|\n|\r", -1)) {
             numero++;
             if (linea.isBlank()) continue;
-            List<String> valores = dividir(linea, numero);
+            List<String> valores = dividir(linea, numero, separador);
             if (encabezados == null) {
                 encabezados = valores.stream().map(v -> v.toLowerCase(Locale.ROOT)).toList();
                 continue;
@@ -56,7 +62,7 @@ public final class CsvLector {
         return new Contenido(encabezados, filas);
     }
 
-    private static String decodificar(byte[] bytes) {
+    private static String decodificar(byte[] bytes, boolean aceptaWindows1252) {
         try {
             return StandardCharsets.UTF_8.newDecoder()
                     .onMalformedInput(CodingErrorAction.REPORT)
@@ -64,11 +70,12 @@ public final class CsvLector {
                     .decode(ByteBuffer.wrap(bytes))
                     .toString();
         } catch (CharacterCodingException ex) {
+            if (aceptaWindows1252) return new String(bytes, Charset.forName("windows-1252"));
             throw new ReglaNegocioException("El archivo no está codificado en UTF-8. Guárdelo como \"CSV UTF-8\" y vuelva a intentarlo.");
         }
     }
 
-    private static List<String> dividir(String linea, int numero) {
+    private static List<String> dividir(String linea, int numero, char separador) {
         List<String> valores = new ArrayList<>();
         StringBuilder actual = new StringBuilder();
         boolean enComillas = false;
@@ -83,7 +90,7 @@ public final class CsvLector {
                 }
             } else if (c == '"') {
                 enComillas = true;
-            } else if (c == ',') {
+            } else if (c == separador) {
                 valores.add(actual.toString().trim());
                 actual.setLength(0);
             } else {

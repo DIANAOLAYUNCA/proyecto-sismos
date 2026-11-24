@@ -18,7 +18,7 @@
 
     <section class="tarjeta">
         <h2>Archivos incluidos del curso</h2>
-        <p class="nota">Carga <strong>ubigeo.csv</strong> (25), <strong>tipo_alerta.csv</strong> (4) y <strong>tipo_dano.csv</strong> (7) con un solo clic. Los códigos que ya existen se omiten, por lo que puede repetirse sin duplicar datos.</p>
+        <p class="nota">Carga <strong>ubigeo.csv</strong> (25), <strong>tipo_alerta.csv</strong> (4), <strong>tipo_dano.csv</strong> (7) y <strong>ubigeo_distritos.csv</strong> (1891 distritos del INEI) con un solo clic. Los códigos que ya existen se omiten, por lo que puede repetirse sin duplicar datos.</p>
         <form method="post" th:action="@{/importacion/incluidos}" class="acciones">
             <button type="submit">Importar archivos incluidos</button>
         </form>
@@ -26,7 +26,7 @@
 
     <section class="tarjeta" th:each="c : ${catalogos}">
         <h2 th:text="${c.titulo}">Catálogo</h2>
-        <p class="nota">Columnas esperadas: <span th:text="${#strings.listJoin(c.columnas, ', ')}"></span>. Archivo en UTF-8 separado por comas.</p>
+        <p class="nota">Columnas esperadas: <span th:text="${#strings.listJoin(c.columnas, ', ')}"></span>. <span th:text="${c.formato}">Archivo en UTF-8 separado por comas</span>.</p>
         <form method="post" enctype="multipart/form-data" th:action="@{/importacion/{ruta}(ruta=${c.ruta})}"
               class="formulario formulario-columna">
             <label>Archivo CSV
@@ -45,7 +45,9 @@
             Importadas: <strong th:text="${r.importadas}">0</strong> ·
             Omitidas: <strong th:text="${r.omitidas}">0</strong> ·
             Rechazadas: <strong th:text="${r.rechazadas}">0</strong>
+            <span th:if="${r.ignoradas > 0}"> · Ignoradas (filas vacías o notas): <strong th:text="${r.ignoradas}">0</strong></span>
         </p>
+        <p class="nota" th:if="${r.detalleReducido}">Por el tamaño del archivo, el detalle muestra solo las filas importadas y rechazadas; las omitidas ya existían y no se modificaron.</p>
         <div class="tabla-scroll">
             <table>
                 <thead>
@@ -55,7 +57,7 @@
                     <tr th:if="${#lists.isEmpty(r.lineas)}">
                         <td colspan="4" class="vacio">El archivo no tiene filas de datos.</td>
                     </tr>
-                    <tr th:each="l : ${r.lineas}">
+                    <tr th:each="l : ${r.lineasMostradas}">
                         <td th:text="${l.numero}"></td>
                         <td th:text="${l.codigo}"></td>
                         <td th:text="${l.estado}"></td>

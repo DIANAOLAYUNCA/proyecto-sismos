@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distrito | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Ubigeo INEI</span>
+        <h1 th:text="${distritoId == null} ? 'Nuevo distrito' : 'Editar distrito'">Nuevo distrito</h1>
+    </header>
+    <section class="tarjeta">
+        <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
+        <form method="post" th:object="${distritoForm}"
+              th:action="${distritoId == null} ? @{/distritos} : @{/distritos/{id}/editar(id=${distritoId})}"
+              class="formulario formulario-columna">
+            <input type="hidden" th:if="${distritoId != null}" th:field="*{id}">
+            <label>Provincia
+                <select th:field="*{provinciaId}" th:errorclass="campo-invalido" required>
+                    <option value="">Seleccione...</option>
+                    <option th:each="p : ${provincias}" th:value="${p.id}" th:text="${p.departamento.nombre + ' - ' + p.nombre}"></option>
+                </select>
+                <span class="mensaje-campo" th:errors="*{provinciaId}"></span>
+            </label>
+            <label>Código del distrito (2 dígitos)
+                <input th:field="*{codigo}" th:errorclass="campo-invalido" maxlength="2" inputmode="numeric" pattern="\d{2}" required>
+                <span class="mensaje-campo" th:errors="*{codigo}"></span>
+            </label>
+            <label>Nombre
+                <input th:field="*{nombre}" th:errorclass="campo-invalido" maxlength="100" required>
+                <span class="mensaje-campo" th:errors="*{nombre}"></span>
+            </label>
+            <label>Estado
+                <select th:field="*{estado}" required>
+                    <option value="ACTIVO">ACTIVO</option>
+                    <option value="INACTIVO">INACTIVO</option>
+                </select>
+            </label>
+            <p class="nota">El código ubigeo completo se forma con el código del departamento, el de la provincia y el del distrito.</p>
+            <div class="acciones">
+                <button type="submit" th:text="${distritoId == null} ? 'Registrar distrito' : 'Guardar cambios'">Registrar distrito</button>
+                <a th:href="@{/distritos}">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

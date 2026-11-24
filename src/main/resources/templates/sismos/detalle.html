@@ -27,6 +27,7 @@
             <div><dt>Longitud</dt><dd th:text="${evento.longitud}"></dd></div>
             <div><dt>Referencia</dt><dd th:text="${evento.referencia}"></dd></div>
             <div><dt>Ubicación</dt><dd th:text="${evento.ubicacion.codigo + ' - ' + evento.ubicacion.nombre}"></dd></div>
+            <div><dt>Distrito</dt><dd th:text="${evento.distrito != null ? evento.distrito.provincia.nombre + ' - ' + evento.distrito.nombre : ''}"></dd></div>
             <div><dt>Tipo de alerta</dt><dd th:text="${evento.tipoAlerta.nombre + ' (' + evento.tipoAlerta.color + ')'}"></dd></div>
             <div><dt>Nivel de afectación</dt><dd th:text="${evento.afectacionNivel != null ? evento.afectacionNivel.nombre : ''}"></dd></div>
             <div><dt>Estado</dt><dd th:text="${evento.estado}"></dd></div>

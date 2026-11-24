@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar distrito | CSSP</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="contenedor">
+    <header>
+        <span class="version">Ubigeo INEI</span>
+        <h1>Confirmar eliminación</h1>
+    </header>
+    <section class="tarjeta">
+        <p>¿Desea eliminar el distrito <strong th:text="${distrito.nombre}"></strong> (<span th:text="${distrito.ubigeo}"></span>)?</p>
+        <p class="nota">El distrito pasará a estado INACTIVO y dejará de ofrecerse al registrar sismos y estaciones. Los registros que ya lo usan no se modifican.</p>
+        <form method="post" th:action="@{/distritos/{id}/eliminar(id=${distrito.id})}" class="acciones">
+            <button class="boton-peligro" type="submit">Confirmar eliminación</button>
+            <a th:href="@{/distritos}">Cancelar</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>

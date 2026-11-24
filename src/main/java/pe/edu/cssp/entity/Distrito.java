@@ -27,12 +27,15 @@ public class Distrito {
     @JoinColumn(name = "provincia_id", nullable = false)
     private Provincia provincia;
 
-    @Column(name = "nombre", unique = true, nullable = false, length = 100)
+    @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
     
     @Column(name = "codigo", length = 10)
     private String codigo;
-    
+
+    @Column(name = "estado", nullable = false, length = 10)
+    private String estado = "ACTIVO";
+
     @Column(name = "creacion_fecha", nullable = false)
     private LocalDateTime creacionFecha;
     
@@ -86,6 +89,19 @@ public class Distrito {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    /** Código ubigeo de 6 dígitos: departamento + provincia + distrito. */
+    public String getUbigeo() {
+        return provincia.getDepartamento().getCodigo() + provincia.getCodigo() + codigo;
     }
 
     public Provincia getProvincia() {

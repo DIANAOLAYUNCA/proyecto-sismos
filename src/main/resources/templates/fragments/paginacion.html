@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--/* Barra de paginación común. Uso: <div th:replace="~{fragments/paginacion :: barra(${pagina})}"></div> */-->
+<div class="paginacion" th:fragment="barra(pagina)" th:if="${pagina.totalElementos > 0}">
+    <p class="paginacion-info">
+        Mostrando <strong th:text="${pagina.desde}">1</strong>–<strong th:text="${pagina.hasta}">10</strong>
+        de <strong th:text="${pagina.totalElementos}">0</strong> registros
+    </p>
+    <div class="paginacion-tamano">
+        <span>Por página:</span>
+        <a th:each="t : ${pagina.tamanos}" th:href="${pagina.urlTamano(t)}" th:text="${t}"
+           th:classappend="${t == pagina.tamano} ? 'activa'"
+           th:attr="aria-current=${t == pagina.tamano} ? 'true'">10</a>
+    </div>
+    <nav class="paginacion-enlaces" aria-label="Paginación">
+        <a th:if="${!pagina.primera}" th:href="${pagina.urlPagina(1)}" title="Primera página">«</a>
+        <a th:if="${!pagina.primera}" th:href="${pagina.urlPagina(pagina.numero - 1)}">Anterior</a>
+        <a th:each="n : ${pagina.ventana}" th:href="${pagina.urlPagina(n)}" th:text="${n}"
+           th:classappend="${n == pagina.numero} ? 'activa'"
+           th:attr="aria-current=${n == pagina.numero} ? 'page'">1</a>
+        <a th:if="${!pagina.ultima}" th:href="${pagina.urlPagina(pagina.numero + 1)}">Siguiente</a>
+        <a th:if="${!pagina.ultima}" th:href="${pagina.urlPagina(pagina.totalPaginas)}" title="Última página">»</a>
+    </nav>
+</div>
+</body>
+</html>

@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.AfectacionNivel;
 import pe.edu.cssp.entity.Estacion;
@@ -21,6 +22,7 @@ import pe.edu.cssp.repository.TipoDanoRepository;
 import pe.edu.cssp.repository.UbicacionRepository;
 
 @SpringBootTest
+@Import(AutenticacionPruebas.class)
 @Transactional
 abstract class BaseDatosTest {
     static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
