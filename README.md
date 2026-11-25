@@ -64,7 +64,33 @@ Usan una base H2 en memoria: no necesitan MySQL ni tocan sus datos.
 Los formularios de sismos y estaciones tienen un campo **Distrito (opcional)**. Al elegir la ubicación (departamento), el desplegable solo ofrece los distritos activos de ese departamento (`GET /distritos/por-ubicacion/{id}`). El servicio también lo valida: el distrito debe existir, estar activo y pertenecer al departamento de la ubicación.
 
 ## Paginación
-Los listados de distritos, reportes de daño y niveles de afectación están paginados. Parámetros de la URL: `pagina` (desde 1), `tamano` (10, 20, 50 o 100), `orden` y `dir` (`asc`/`desc`); los listados con filtros (distritos: `q`, `departamentoId`, `provinciaId`, `estado`; reportes: `eventoId`) los conservan al cambiar de página. Solo se puede ordenar por las columnas que cada módulo declara. Para paginar otro listado: `Paginacion.pedido(...)` en el controlador, `PaginaVista` en el modelo y `fragments/paginacion :: barra(${pagina})` en la plantilla (ver `DistritoController` y `distritos/lista.html`).
+Todos los listados están paginados: sismos, estaciones, ubicaciones, distritos, tipos de alerta, tipos de daño, reportes de daño y niveles de afectación. Parámetros de la URL: `pagina` (desde 1), `tamano` (10, 20, 50 o 100), `orden` y `dir` (`asc`/`desc`). Los filtros se conservan al cambiar de página y los resuelve la base de datos, no la memoria.
+
+| Listado | Filtros |
+|---|---|
+| `/eventos` (sismos) | `codigo`, `fecha`, `magnitudMinima`, `estado`, `ubicacionId` |
+| `/estaciones` | `q`, `estado`, `ubicacionId` |
+| `/ubicaciones` | `q`, `estado`, `tipo` |
+| `/distritos` | `q`, `departamentoId`, `provinciaId`, `estado` |
+| `/tipos-alerta` | `q`, `estado` |
+| `/tipos-dano` | `q`, `estado`, `sector` |
+| `/reportes-dano` | `eventoId` |
+
+Solo se puede ordenar por las columnas que cada módulo declara. Para paginar otro listado: `Paginacion.pedido(...)` en el controlador, `PaginaVista` en el modelo y `fragments/paginacion :: barra(${pagina})` en la plantilla (ver `DistritoController` y `distritos/lista.html`). Sismos y estaciones también muestran la columna **Distrito**.
+
+## Dashboard
+`/dashboard` (también `/`) muestra 6 indicadores, 2 gráficos y 2 tablas, filtrables por **ubicación** (un departamento o todo el Perú) y **periodo** (últimos 3, 6, 12 o 24 meses; por defecto 6). Todo excluye los sismos dados de baja (`INACTIVO`).
+
+| Indicador | Cómo se calcula |
+|---|---|
+| Sismos registrados | Cantidad de sismos vigentes del filtro |
+| Magnitud máxima | Mayor magnitud (Mw) del filtro |
+| Sismos de alerta alta | Magnitud ≥ 5.0 o alerta naranja/roja, y su % sobre el total |
+| Sismos abiertos | Estado distinto de `CERRADO` |
+| Estaciones activas | Estaciones `ACTIVA` de la ubicación (no depende del periodo) |
+| Afectados reportados | Suma de afectados de los reportes de daño no descartados |
+
+La ficha técnica de cada indicador (qué mide, cómo se calcula, fuente de datos y decisión que apoya) está al final de la propia pantalla del dashboard.
 
 ## Estructura
 `controller` → `service` → `repository` (Spring Data JPA) · `web/form` (Bean Validation) · `web/paginacion` (paginación y orden) · `validation` (validadores propios) · `templates` (Thymeleaf) · `static` (CSS/JS).
