@@ -24,24 +24,56 @@
     <div class="alerta alerta-error" th:if="${error}" th:text="${error}"></div>
     
     <section class="tarjeta">
-        <h2>Tipos de daño precargados: <span th:text="${#lists.size(tipos)}">0</span></h2>
+        <form method="get" th:action="@{/tipos-dano}" class="filtro">
+            <label>Buscar
+                <input type="search" name="q" th:value="${textoBuscado}" maxlength="100" placeholder="Código o nombre">
+            </label>
+            <label>Sector
+                <select name="sector">
+                    <option value="">Todos</option>
+                    <option value="SALUD" th:selected="${sectorSeleccionado == 'SALUD'}">SALUD</option>
+                    <option value="VIVIENDA" th:selected="${sectorSeleccionado == 'VIVIENDA'}">VIVIENDA</option>
+                    <option value="EDUCACION" th:selected="${sectorSeleccionado == 'EDUCACION'}">EDUCACION</option>
+                    <option value="INFRAESTRUCTURA" th:selected="${sectorSeleccionado == 'INFRAESTRUCTURA'}">INFRAESTRUCTURA</option>
+                    <option value="SERVICIOS_BASICOS" th:selected="${sectorSeleccionado == 'SERVICIOS_BASICOS'}">SERVICIOS_BASICOS</option>
+                    <option value="AGROPECUARIO" th:selected="${sectorSeleccionado == 'AGROPECUARIO'}">AGROPECUARIO</option>
+                    <option value="POBLACION" th:selected="${sectorSeleccionado == 'POBLACION'}">POBLACION</option>
+                </select>
+            </label>
+            <label>Estado
+                <select name="estado">
+                    <option value="">Todos</option>
+                    <option value="ACTIVO" th:selected="${estadoSeleccionado == 'ACTIVO'}">ACTIVO</option>
+                    <option value="INACTIVO" th:selected="${estadoSeleccionado == 'INACTIVO'}">INACTIVO</option>
+                </select>
+            </label>
+            <input type="hidden" name="tamano" th:value="${pagina.tamano}">
+            <input type="hidden" name="orden" th:value="${pagina.orden}">
+            <input type="hidden" name="dir" th:value="${pagina.dir}">
+            <button type="submit">Buscar</button>
+            <a th:href="@{/tipos-dano}">Limpiar</a>
+        </form>
+    </section>
+
+    <section class="tarjeta">
+        <h2>Tipos de daño precargados: <span th:text="${pagina.totalElementos}">0</span></h2>
         <div class="tabla-scroll">
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Sector</th>
-                        <th>Estado</th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('id')}">ID <span th:text="${pagina.flecha('id')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('codigo')}">Código <span th:text="${pagina.flecha('codigo')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('nombre')}">Nombre <span th:text="${pagina.flecha('nombre')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('sector')}">Sector <span th:text="${pagina.flecha('sector')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('estado')}">Estado <span th:text="${pagina.flecha('estado')}"></span></a></th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:if="${#lists.isEmpty(tipos)}">
+                    <tr th:if="${#lists.isEmpty(pagina.items)}">
                         <td colspan="6" class="vacio">No se encontraron tipos de daño.</td>
                     </tr>
-                    <tr th:each="tipo : ${tipos}">
+                    <tr th:each="tipo : ${pagina.items}">
                         <td th:text="${tipo.id}"></td>
                         <td th:text="${tipo.codigo}"></td>
                         <td th:text="${tipo.nombre}"></td>
@@ -76,6 +108,7 @@
                 </tbody>
             </table>
         </div>
+        <div th:replace="~{fragments/paginacion :: barra(${pagina})}"></div>
     </section>
 </main>
 </body>

@@ -45,7 +45,7 @@
                     <option value="EN_EVALUACION" th:selected="${estadoSeleccionado == 'EN_EVALUACION'}">EN_EVALUACION</option>
                     <option value="EN_SEGUIMIENTO" th:selected="${estadoSeleccionado == 'EN_SEGUIMIENTO'}">EN_SEGUIMIENTO</option>
                     <option value="CERRADO" th:selected="${estadoSeleccionado == 'CERRADO'}">CERRADO</option>  
-                    <option value="INACTIVO" th:selected="${estadoSeleccionado == 'INACTIVO'}">INACTIVO</option>                    <option value="INACTIVO" th:selected="${estadoSeleccionado == 'INACTIVO'}">INACTIVO</option>
+                    <option value="INACTIVO" th:selected="${estadoSeleccionado == 'INACTIVO'}">INACTIVO</option>
                 </select>
             </label>
             <label>Ubicación
@@ -54,31 +54,43 @@
                     <option th:each="u : ${ubicaciones}" th:value="${u.id}" th:text="${u.codigo + ' - ' + u.nombre}" th:selected="${u.id == ubicacionSeleccionada}"></option>
                 </select>
             </label>
+            <input type="hidden" name="tamano" th:value="${pagina.tamano}">
+            <input type="hidden" name="orden" th:value="${pagina.orden}">
+            <input type="hidden" name="dir" th:value="${pagina.dir}">
             <button type="submit">Filtrar</button>
             <a th:href="@{/eventos}">Limpiar</a>
         </form>
     </section>
     <section class="tarjeta">
-        <h2>Sismos encontrados: <span th:text="${#lists.size(eventos)}">0</span></h2>
+        <h2>Sismos encontrados: <span th:text="${pagina.totalElementos}">0</span></h2>
         <div class="tabla-scroll">
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th><th>Código</th><th>Fecha</th><th>Magnitud</th><th>Profundidad</th>
-                        <th>Ubicación</th><th>Alerta</th><th>Estado</th><th>Acciones</th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('id')}">ID <span th:text="${pagina.flecha('id')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('codigo')}">Código <span th:text="${pagina.flecha('codigo')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('fecha')}">Fecha <span th:text="${pagina.flecha('fecha')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('magnitud')}">Magnitud <span th:text="${pagina.flecha('magnitud')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('profundidad')}">Profundidad <span th:text="${pagina.flecha('profundidad')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('ubicacion')}">Ubicación <span th:text="${pagina.flecha('ubicacion')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('distrito')}">Distrito <span th:text="${pagina.flecha('distrito')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('alerta')}">Alerta <span th:text="${pagina.flecha('alerta')}"></span></a></th>
+                        <th><a class="orden" th:href="${pagina.urlOrden('estado')}">Estado <span th:text="${pagina.flecha('estado')}"></span></a></th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:if="${#lists.isEmpty(eventos)}">
-                        <td colspan="9" class="vacio">No se encontraron sismos.</td>
+                    <tr th:if="${#lists.isEmpty(pagina.items)}">
+                        <td colspan="10" class="vacio">No se encontraron sismos.</td>
                     </tr>
-                    <tr th:each="evento : ${eventos}">
+                    <tr th:each="evento : ${pagina.items}">
                         <td th:text="${evento.id}"></td>
                         <td th:text="${evento.codigo}"></td>
-                        <td th:text="${evento.fechaHora}"></td>
+                        <td th:text="${#temporals.format(evento.fechaHora, 'dd/MM/yyyy HH:mm')}"></td>
                         <td th:text="${evento.magnitud}"></td>
                         <td th:text="${evento.profundidad}"></td>
                         <td th:text="${evento.ubicacion.nombre}"></td>
+                        <td th:text="${evento.distrito != null ? evento.distrito.nombre : '—'}"></td>
                         <td th:text="${evento.tipoAlerta.nombre}"></td>
                         <td th:text="${evento.estado}"></td>                        
                         <td class="acciones-tabla">
@@ -110,6 +122,7 @@
                 </tbody>
             </table>
         </div>
+        <div th:replace="~{fragments/paginacion :: barra(${pagina})}"></div>
     </section>
 </main>
 </body>

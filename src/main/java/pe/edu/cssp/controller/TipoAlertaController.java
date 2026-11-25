@@ -10,16 +10,37 @@ import pe.edu.cssp.entity.TipoAlerta;
 import pe.edu.cssp.service.TipoAlertaService;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.TipoAlertaForm;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
+import pe.edu.cssp.web.paginacion.PaginaVista;
+import pe.edu.cssp.web.paginacion.Paginacion;
 
 @Controller
 @RequestMapping("/tipos-alerta")
 public class TipoAlertaController {
+    private static final Map<String, String> ORDEN = Map.of(
+            "id", "id",
+            "codigo", "codigo,id",
+            "nombre", "nombre,id",
+            "color", "color,id",
+            "prioridad", "prioridad,id",
+            "estado", "estado,id");
+
     private final TipoAlertaService tipoAlertaService;
     public TipoAlertaController(TipoAlertaService tipoAlertaService) { this.tipoAlertaService = tipoAlertaService; }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("tipos", tipoAlertaService.listar());
+    public String listar(@RequestParam(name = "q", required = false) String texto,
+                         @RequestParam(required = false) String estado,
+                         @RequestParam(required = false) Integer pagina,
+                         @RequestParam(required = false) Integer tamano,
+                         @RequestParam(required = false) String orden,
+                         @RequestParam(required = false) String dir,
+                         HttpServletRequest request, Model model) {
+        Paginacion.Pedido pedido = Paginacion.pedido(pagina, tamano, orden, dir, ORDEN, "prioridad");
+        model.addAttribute("pagina", new PaginaVista<>(tipoAlertaService.buscar(texto, estado, pedido.pageable()), pedido, request));
+        model.addAttribute("textoBuscado", texto);
+        model.addAttribute("estadoSeleccionado", estado);
         return "tiposalerta/lista";
     }
 

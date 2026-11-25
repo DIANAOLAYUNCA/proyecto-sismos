@@ -48,4 +48,16 @@ public interface ReporteDanoRepository extends JpaRepository<ReporteDano, Intege
     long sumaAfectados(@Param("eventoId") int eventoId);
 
     long countByAfectacionNivel_Id(int afectacionNivelId);
+
+    /** Reportes válidos (no descartados) de los sismos vigentes que entran en el filtro del dashboard. */
+    @Query("""
+           select r from ReporteDano r
+           join fetch r.evento e
+           join fetch r.tipoDano
+           where r.estado <> 'DESCARTADO' and e.estado <> 'INACTIVO'
+             and e.fechaHora >= :desde and e.fechaHora < :hasta
+             and (:ubicacionId = 0 or e.ubicacion.id = :ubicacionId)
+           """)
+    List<ReporteDano> paraDashboard(@Param("ubicacionId") int ubicacionId, @Param("desde") java.time.LocalDateTime desde,
+                                    @Param("hasta") java.time.LocalDateTime hasta);
 }

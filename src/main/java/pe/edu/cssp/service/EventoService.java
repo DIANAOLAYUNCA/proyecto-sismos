@@ -1,9 +1,12 @@
 package pe.edu.cssp.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.AfectacionNivel;
@@ -45,15 +48,26 @@ public class EventoService {
     @Transactional(readOnly = true)
     public List<Distrito> distritosDisponibles(Integer ubicacionId) { return distritoService.opcionesPorUbicacion(ubicacionId); }
 
+    /**
+     * Búsqueda paginada de sismos resuelta por la base de datos (antes se traían todos y se filtraba en memoria).
+     * La fecha (yyyy-MM-dd) se convierte en el rango [día 00:00, día siguiente 00:00).
+     */
     @Transactional(readOnly = true)
-    public List<Evento> listar(String codigo, String fecha, Double magnitudMinima, String estado, Integer ubicacionId) {
-        return eventoRepository.listar().stream()
-                .filter(e -> codigo == null || codigo.isBlank() || e.getCodigo().toUpperCase().contains(codigo.trim().toUpperCase()))
-                .filter(e -> fecha == null || fecha.isBlank() || (e.getFechaHora() != null && e.getFechaHora().format(FORMATO).startsWith(fecha.trim())))
-                .filter(e -> magnitudMinima == null || e.getMagnitud() >= magnitudMinima)
-                .filter(e -> estado == null || estado.isBlank() || estado.equalsIgnoreCase(e.getEstado()))
-                .filter(e -> ubicacionId == null || e.getUbicacion().getId() == ubicacionId)
-                .toList();
+    public Page<Evento> buscar(String codigo, String fecha, Double magnitudMinima, String estado, Integer ubicacionId, Pageable pageable) {
+        LocalDateTime desde = LocalDateTime.of(1900, 1, 1, 0, 0);
+        LocalDateTime hasta = LocalDateTime.of(9999, 12, 31, 0, 0);
+        if (fecha != null && !fecha.isBlank()) {
+            try {
+                LocalDate dia = LocalDate.parse(fecha.trim());
+                desde = dia.atStartOfDay();
+                hasta = dia.plusDays(1).atStartOfDay();
+            } catch (DateTimeParseException ex) {
+                throw new ReglaNegocioException("La fecha del filtro no es válida.");
+            }
+        }
+        return eventoRepository.buscar(codigo == null ? "" : codigo.trim(), desde, hasta,
+                magnitudMinima == null ? -1 : magnitudMinima, estado == null ? "" : estado.trim(),
+                ubicacionId == null ? 0 : ubicacionId, pageable);
     }
 
     @Transactional(readOnly = true)

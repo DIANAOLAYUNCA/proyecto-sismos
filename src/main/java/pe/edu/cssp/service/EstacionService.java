@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.Estacion;
@@ -34,6 +36,13 @@ public class EstacionService {
 
     @Transactional(readOnly = true)
     public List<Estacion> listar() { return estacionRepository.listar(); }
+
+    /** Consulta paginada hecha en la base de datos; los filtros vacíos no restringen. */
+    @Transactional(readOnly = true)
+    public Page<Estacion> buscar(String texto, String estado, Integer ubicacionId, Pageable pageable) {
+        return estacionRepository.buscar(texto == null ? "" : texto.trim(), estado == null ? "" : estado.trim(),
+                ubicacionId == null ? 0 : ubicacionId, pageable);
+    }
 
     @Transactional(readOnly = true)
     public List<Ubicacion> ubicacionesActivas() { return ubicacionRepository.findByEstadoOrderByCodigoAsc("ACTIVO"); }
