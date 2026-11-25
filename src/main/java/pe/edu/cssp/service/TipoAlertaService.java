@@ -1,6 +1,8 @@
 package pe.edu.cssp.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.TipoAlerta;
@@ -18,6 +20,11 @@ public class TipoAlertaService {
 
     @Transactional(readOnly = true)
     public List<TipoAlerta> listar() { return tipoAlertaRepository.findAllByOrderByPrioridadAsc(); }
+
+    @Transactional(readOnly = true)
+    public Page<TipoAlerta> buscar(String texto, String estado, Pageable pageable) {
+        return tipoAlertaRepository.buscar(texto == null ? "" : texto.trim(), estado == null ? "" : estado.trim(), pageable);
+    }
 
     @Transactional(readOnly = true)
     public TipoAlerta buscarPorId(int id) {

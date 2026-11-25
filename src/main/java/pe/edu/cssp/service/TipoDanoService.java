@@ -1,6 +1,8 @@
 package pe.edu.cssp.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cssp.entity.TipoDano;
@@ -18,6 +20,12 @@ public class TipoDanoService {
 
     @Transactional(readOnly = true)
     public List<TipoDano> listar() { return tipoDanoRepository.findAllByOrderByCodigoAsc(); }
+
+    @Transactional(readOnly = true)
+    public Page<TipoDano> buscar(String texto, String estado, String sector, Pageable pageable) {
+        return tipoDanoRepository.buscar(texto == null ? "" : texto.trim(), estado == null ? "" : estado.trim(),
+                sector == null ? "" : sector.trim(), pageable);
+    }
 
     @Transactional(readOnly = true)
     public TipoDano buscarPorId(int id) {

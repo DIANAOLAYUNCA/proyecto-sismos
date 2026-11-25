@@ -10,16 +10,38 @@ import pe.edu.cssp.entity.Ubicacion;
 import pe.edu.cssp.service.UbicacionService;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.UbicacionForm;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
+import pe.edu.cssp.web.paginacion.PaginaVista;
+import pe.edu.cssp.web.paginacion.Paginacion;
 
 @Controller
 @RequestMapping("/ubicaciones")
 public class UbicacionController {
+    private static final Map<String, String> ORDEN = Map.of(
+            "id", "id",
+            "codigo", "codigo,id",
+            "nombre", "nombre,id",
+            "tipo", "tipo,codigo",
+            "estado", "estado,codigo");
+
     private final UbicacionService ubicacionService;
     public UbicacionController(UbicacionService ubicacionService) { this.ubicacionService = ubicacionService; }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("ubicaciones", ubicacionService.listar());
+    public String listar(@RequestParam(name = "q", required = false) String texto,
+                         @RequestParam(required = false) String estado,
+                         @RequestParam(required = false) String tipo,
+                         @RequestParam(required = false) Integer pagina,
+                         @RequestParam(required = false) Integer tamano,
+                         @RequestParam(required = false) String orden,
+                         @RequestParam(required = false) String dir,
+                         HttpServletRequest request, Model model) {
+        Paginacion.Pedido pedido = Paginacion.pedido(pagina, tamano, orden, dir, ORDEN, "codigo");
+        model.addAttribute("pagina", new PaginaVista<>(ubicacionService.buscar(texto, estado, tipo, pedido.pageable()), pedido, request));
+        model.addAttribute("textoBuscado", texto);
+        model.addAttribute("estadoSeleccionado", estado);
+        model.addAttribute("tipoSeleccionado", tipo);
         return "ubicaciones/lista";
     }
 

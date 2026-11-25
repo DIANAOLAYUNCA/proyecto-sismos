@@ -12,10 +12,27 @@ import pe.edu.cssp.entity.Evento;
 import pe.edu.cssp.service.EventoService;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.EventoForm;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
+import org.springframework.data.domain.Page;
+import pe.edu.cssp.web.paginacion.PaginaVista;
+import pe.edu.cssp.web.paginacion.Paginacion;
 
 @Controller
 @RequestMapping("/eventos")
 public class EventoController {
+    /** Columna pública -> propiedades de la consulta (u = ubicación, di = distrito, t = tipo de alerta). */
+    private static final Map<String, String> ORDEN = Map.of(
+            "id", "id",
+            "codigo", "codigo,id",
+            "fecha", "fechaHora,id",
+            "magnitud", "magnitud,id",
+            "profundidad", "profundidad,id",
+            "ubicacion", "u.nombre,id",
+            "distrito", "di.nombre,id",
+            "alerta", "t.prioridad,id",
+            "estado", "estado,id");
+
     private final EventoService eventoService;
     public EventoController(EventoService eventoService) { this.eventoService = eventoService; }
 
@@ -25,8 +42,21 @@ public class EventoController {
                          @RequestParam(required = false) Double magnitudMinima,
                          @RequestParam(required = false) String estado,
                          @RequestParam(required = false) Integer ubicacionId,
-                         Model model) {
-        model.addAttribute("eventos", eventoService.listar(codigo, fecha, magnitudMinima, estado, ubicacionId));
+                         @RequestParam(required = false) Integer pagina,
+                         @RequestParam(required = false) Integer tamano,
+                         @RequestParam(required = false) String orden,
+                         @RequestParam(required = false) String dir,
+                         HttpServletRequest request, Model model) {
+        Paginacion.Pedido pedido = Paginacion.pedido(pagina, tamano, orden, dir, ORDEN, "fecha", "desc");
+        Page<Evento> resultado;
+        try {
+            resultado = eventoService.buscar(codigo, fecha, magnitudMinima, estado, ubicacionId, pedido.pageable());
+        } catch (ReglaNegocioException error) {
+            model.addAttribute("error", error.getMessage());
+            fecha = null;
+            resultado = eventoService.buscar(codigo, null, magnitudMinima, estado, ubicacionId, pedido.pageable());
+        }
+        model.addAttribute("pagina", new PaginaVista<>(resultado, pedido, request));
         model.addAttribute("ubicaciones", eventoService.ubicacionesActivas());
         model.addAttribute("codigoBuscado", codigo);
         model.addAttribute("fechaSeleccionada", fecha);

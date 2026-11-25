@@ -10,16 +10,41 @@ import pe.edu.cssp.entity.Estacion;
 import pe.edu.cssp.service.EstacionService;
 import pe.edu.cssp.web.error.ReglaNegocioException;
 import pe.edu.cssp.web.form.EstacionForm;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
+import pe.edu.cssp.web.paginacion.PaginaVista;
+import pe.edu.cssp.web.paginacion.Paginacion;
 
 @Controller
 @RequestMapping("/estaciones")
 public class EstacionController {
+    /** Columna pública -> propiedades de la consulta (u = ubicación, di = distrito). */
+    private static final Map<String, String> ORDEN = Map.of(
+            "id", "id",
+            "codigo", "codigo,id",
+            "nombre", "nombre,id",
+            "ubicacion", "u.nombre,id",
+            "distrito", "di.nombre,id",
+            "estado", "estado,id");
+
     private final EstacionService estacionService;
     public EstacionController(EstacionService estacionService) { this.estacionService = estacionService; }
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("estaciones", estacionService.listar());
+    public String listar(@RequestParam(name = "q", required = false) String texto,
+                         @RequestParam(required = false) String estado,
+                         @RequestParam(required = false) Integer ubicacionId,
+                         @RequestParam(required = false) Integer pagina,
+                         @RequestParam(required = false) Integer tamano,
+                         @RequestParam(required = false) String orden,
+                         @RequestParam(required = false) String dir,
+                         HttpServletRequest request, Model model) {
+        Paginacion.Pedido pedido = Paginacion.pedido(pagina, tamano, orden, dir, ORDEN, "id");
+        model.addAttribute("pagina", new PaginaVista<>(estacionService.buscar(texto, estado, ubicacionId, pedido.pageable()), pedido, request));
+        model.addAttribute("ubicaciones", estacionService.ubicacionesActivas());
+        model.addAttribute("textoBuscado", texto);
+        model.addAttribute("estadoSeleccionado", estado);
+        model.addAttribute("ubicacionSeleccionada", ubicacionId);
         return "estaciones/lista";
     }
 
